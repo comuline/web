@@ -1,4 +1,4 @@
-import MainPage from "@/ui/pages/home";
+import MainPage from "@/commons/ui/pages/home";
 
 export default async function Home() {
   return <MainPage />;
