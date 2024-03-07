@@ -1,8 +1,8 @@
-import pg from "@/libs/pg";
+import pg from "@/commons/libs/pg";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const stationRouter = createTRPCRouter({
-  getAll: publicProcedure.mutation(async () => {
+  getAll: publicProcedure.query(async () => {
     return await pg<
       Array<{
         id: string;
