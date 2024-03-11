@@ -31,7 +31,13 @@ const StationItem = ({
 
   const [isOpen, setOpen] = useState(true);
 
-  if (!data) return null;
+  if (!data)
+    return (
+      <div className="flex w-full flex-col gap-2 pr-1 pt-2 text-left">
+        <div className="h-[13px] w-[80px] rounded-md bg-white/10" />
+        <div className="h-[30px] w-[120px] rounded-md bg-white/10" />
+      </div>
+    );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const groupedData: GroupedData = data?.reduce((acc: any, obj) => {
