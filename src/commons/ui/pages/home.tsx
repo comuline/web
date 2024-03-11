@@ -231,17 +231,22 @@ const StationItem = ({
 const MainPage = () => {
   const station = api.station.getAll.useQuery();
   const [isOpen, setOpen] = useState(false);
-  const [selected, setSelected] = useState<Array<string>>(
-    localStorage.getItem("jadwal-krl-selected")
-      ? JSON.parse(localStorage.getItem("jadwal-krl-selected")!)
-      : ["boo-bogor"],
-  );
+  const [selected, setSelected] = useState<Array<string>>([]);
 
   const [search, setSearch] = useState("");
 
   useEffect(() => {
     localStorage.setItem("jadwal-krl-selected", JSON.stringify(selected));
   }, [selected]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("jadwal-krl-selected");
+    if (saved) {
+      setSelected(JSON.parse(saved));
+    } else {
+      setSelected(["boo-bogor", "bks-bekasi"]);
+    }
+  }, []);
 
   return (
     <main className="flex min-h-screen bg-black text-white">
