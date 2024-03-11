@@ -236,6 +236,9 @@ const MainPage = () => {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
+    if (selected.length === 0) {
+      setSelected(["boo-bogor", "bks-bekasi"]);
+    }
     localStorage.setItem("jadwal-krl-selected", JSON.stringify(selected));
   }, [selected]);
 
@@ -243,9 +246,10 @@ const MainPage = () => {
     const saved = localStorage.getItem("jadwal-krl-selected");
     if (saved) {
       setSelected(JSON.parse(saved));
-    } else {
-      setSelected(["boo-bogor", "bks-bekasi"]);
+      return;
     }
+    setSelected(["boo-bogor", "bks-bekasi"]);
+    return;
   }, []);
 
   return (
