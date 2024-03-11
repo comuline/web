@@ -232,7 +232,7 @@ const MainPage = () => {
   const station = api.station.getAll.useQuery();
   const [isOpen, setOpen] = useState(false);
   const [selected, setSelected] = useState<Array<string>>([]);
-
+  const [isLoaded, setLoaded] = useState(true);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -246,9 +246,11 @@ const MainPage = () => {
     const saved = localStorage.getItem("jadwal-krl-selected");
     if (saved) {
       setSelected(JSON.parse(saved));
+      setLoaded(false);
       return;
     }
     setSelected(["boo-bogor", "bks-bekasi"]);
+    setLoaded(false);
     return;
   }, []);
 
@@ -385,7 +387,18 @@ const MainPage = () => {
           </section>
         ) : (
           <section className="flex flex-col gap-1.5 px-[12px] pb-20">
-            {selected.length > 0 ? (
+            {isLoaded ? (
+              <div className="mt-5 flex flex-col gap-5">
+                <div className="flex w-full flex-col gap-2 pr-1 pt-2 text-left">
+                  <div className="h-[13px] w-[80px] rounded-md bg-white/10" />
+                  <div className="h-[30px] w-[120px] rounded-md bg-white/10" />
+                </div>
+                <div className="flex w-full flex-col gap-2 pr-1 pt-2 text-left">
+                  <div className="h-[13px] w-[80px] rounded-md bg-white/10" />
+                  <div className="h-[30px] w-[120px] rounded-md bg-white/10" />
+                </div>
+              </div>
+            ) : selected.length > 0 ? (
               <div className="flex flex-col gap-1">
                 {selected.map((s) => (
                   <StationItem
