@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
+import { env } from "@/env";
 
 export const scheduleRouter = createTRPCRouter({
   getByStationId: publicProcedure
@@ -10,7 +11,7 @@ export const scheduleRouter = createTRPCRouter({
       }
 
       const req = await fetch(
-        `https://api.jadwal-krl.com/v1/schedule/${input.toLocaleUpperCase()}?from_now=true`,
+        `${env.API_URL}/schedule/${input.toLocaleUpperCase()}?from_now=true`,
       );
 
       const data = (await req.json()) as {

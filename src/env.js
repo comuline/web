@@ -7,6 +7,7 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
+    API_URL: z.string().url(),
     NODE_ENV: z.enum(["development", "test", "production"]),
   },
 
@@ -24,6 +25,7 @@ export const env = createEnv({
    * middlewares) or client-side so we need to destruct manually.
    */
   runtimeEnv: {
+    API_URL: process.env.API_URL,
     NODE_ENV: process.env.NODE_ENV,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },

@@ -1,8 +1,9 @@
+import { env } from "@/env";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const stationRouter = createTRPCRouter({
   getAll: publicProcedure.query(async () => {
-    const req = await fetch("https://api.jadwal-krl.com/v1/station/");
+    const req = await fetch(`${env.API_URL}/v1/station/`);
 
     const data = (await req.json()) as {
       status: string;
