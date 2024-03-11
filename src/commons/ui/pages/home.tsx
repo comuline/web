@@ -234,9 +234,7 @@ const MainPage = () => {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    if (selected.length === 0) {
-      setSelected(["boo-bogor", "bks-bekasi"]);
-    }
+    if (selected.length === 0) return;
     localStorage.setItem("jadwal-krl-selected", JSON.stringify(selected));
   }, [selected]);
 
