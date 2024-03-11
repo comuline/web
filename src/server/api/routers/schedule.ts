@@ -30,6 +30,6 @@ export const scheduleRouter = createTRPCRouter({
         }[];
       };
 
-      return data.data;
+      return data.data ?? [];
     }),
 });
