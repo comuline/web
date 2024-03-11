@@ -1,14 +1,21 @@
-import pg from "@/commons/libs/pg";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const stationRouter = createTRPCRouter({
   getAll: publicProcedure.query(async () => {
-    return await pg<
-      Array<{
+    const req = await fetch("https://api.jadwal-krl.com/v1/station/");
+
+    const data = (await req.json()) as {
+      status: string;
+      data: Array<{
         id: string;
-        daop: string;
+        daop: number;
         name: string;
-      }>
-    >`SELECT id, daop, name FROM station`;
+        fgEnable: number;
+        haveSchedule: boolean;
+        updatedAt: string;
+      }>;
+    };
+
+    return data.data;
   }),
 });
