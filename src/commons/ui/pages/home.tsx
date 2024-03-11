@@ -54,15 +54,12 @@ const StationItem = ({
   return (
     <Accordion.Root
       type="multiple"
-      className="w-full pt-2"
+      className="w-full pr-1 pt-2"
       defaultValue={[station.id]}
       onValueChange={(v) => setOpen(v.length > 0)}
     >
       <Accordion.Item value={station.id}>
-        <Accordion.Trigger
-          className="items-center hover:no-underline"
-          disabled={isLoading || !data}
-        >
+        <Accordion.Trigger className="items-center hover:no-underline">
           <div className="flex w-full flex-col gap-2 text-left">
             <p className="text-xs opacity-50">Stasiun</p>
             <h1 className="text-2xl font-semibold capitalize">
@@ -70,9 +67,31 @@ const StationItem = ({
             </h1>
           </div>
         </Accordion.Trigger>
-        {isLoading || !data ? null : (
-          <Accordion.Content>
-            {Object.keys(groupedData).map((lineKey, id, arr) => (
+
+        <Accordion.Content>
+          {isLoading || !data ? (
+            <div className="flex animate-pulse flex-col gap-2">
+              <div className="flex h-full w-full gap-3">
+                <div
+                  className={cn("h-[50px] w-[5px] rounded-full bg-white/10")}
+                />
+                <div className={cn("flex w-full flex-col gap-2")}>
+                  <div className="flex flex-col gap-1 pb-1 pt-0.5">
+                    <div className="flex items-center justify-between gap-2 text-xs">
+                      <div className="h-[13px] w-[80px] rounded-md bg-white/10" />
+                      <div className="h-[13px] w-[50px] rounded-md bg-white/10" />
+                    </div>
+                    <div className="flex items-start justify-between gap-2 ">
+                      <div className="mt-1 h-[25px] w-[80px] rounded-md bg-white/10" />
+
+                      <div className="mt-1 h-[25px] w-[70px] rounded-md bg-white/10" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            Object.keys(groupedData).map((lineKey, id, arr) => (
               <div key={lineKey} className="flex flex-col gap-2">
                 <div className="flex h-full w-full gap-3">
                   <div
@@ -128,7 +147,7 @@ const StationItem = ({
                         {(groupedData[lineKey]?.[destKey] ?? []).slice(1, 5)
                           .length > 0 ? (
                           <div className="flex flex-col gap-2.5">
-                            <p className="text-xs opacity-30">Jam berikutnya</p>
+                            <p className="text-xs opacity-50">Jam berikutnya</p>
                             <div className="grid grid-cols-2 gap-1.5 md:grid-cols-4 md:gap-1">
                               {(groupedData[lineKey]?.[destKey] ?? [])
                                 .slice(1, 5)
@@ -137,7 +156,7 @@ const StationItem = ({
                                     key={train.id}
                                     className="flex flex-col gap-0.5"
                                   >
-                                    <p className="font-mono text-sm font-medium">
+                                    <p className="font-mono text-sm font-semibold">
                                       {train.timeEstimated}
                                     </p>
                                     <p className="text-xs opacity-30">
@@ -189,7 +208,7 @@ const StationItem = ({
                               </Accordion.Content>
                             </Accordion.Item>
                           </Accordion.Root>
-                        ) : id === arr.length - 1 && arr.length > 1 ? null : (
+                        ) : id === arr.length - 1 && arr.length > 0 ? null : (
                           <span className="h-[1px] w-full border-b pb-2 pt-1" />
                         )}
                       </div>
@@ -197,9 +216,9 @@ const StationItem = ({
                   </div>
                 </div>
               </div>
-            ))}
-          </Accordion.Content>
-        )}
+            ))
+          )}
+        </Accordion.Content>
       </Accordion.Item>
     </Accordion.Root>
   );
@@ -211,6 +230,7 @@ const MainPage = () => {
   const [selected, setSelected] = useState<Array<string>>([
     "mri-manggarai",
     "yk-yogya",
+    "jakk-jakartakota",
   ]);
 
   return (
