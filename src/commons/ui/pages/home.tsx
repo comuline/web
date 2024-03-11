@@ -4,7 +4,8 @@ import * as Accordion from "@/commons/ui/components/accordion";
 import { cn } from "@/commons/utils/cn";
 import { getRelativeTimeString, removeSeconds } from "@/commons/utils/date";
 import { api } from "@/trpc/react";
-import { useState } from "react";
+import { Check, Plus } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface TrainData {
   id: string;
@@ -29,6 +30,8 @@ const StationItem = ({
   const { data, isLoading } = api.schedule.getByStationId.useQuery(station.id);
 
   const [isOpen, setOpen] = useState(true);
+
+  if (!data) return null;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const groupedData: GroupedData = data?.reduce((acc: any, obj) => {
@@ -69,7 +72,7 @@ const StationItem = ({
         </Accordion.Trigger>
 
         <Accordion.Content>
-          {isLoading || !data ? (
+          {isLoading ? (
             <div className="flex animate-pulse flex-col gap-2">
               <div className="flex h-full w-full gap-3">
                 <div
@@ -135,6 +138,7 @@ const StationItem = ({
                                     ?.timeEstimated
                                 }
                               </p>
+
                               <p className="text-xs opacity-30">
                                 {getRelativeTimeString(
                                   groupedData[lineKey]?.[destKey]?.[0]
@@ -226,125 +230,167 @@ const StationItem = ({
 
 const MainPage = () => {
   const station = api.station.getAll.useQuery();
-  const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<Array<string>>([
-    "mri-manggarai",
-    "yk-yogya",
-    "jakk-jakartakota",
-  ]);
+  const [isOpen, setOpen] = useState(false);
+  const [selected, setSelected] = useState<Array<string>>(
+    localStorage.getItem("jadwal-krl-selected")
+      ? JSON.parse(localStorage.getItem("jadwal-krl-selected")!)
+      : ["boo-bogor"],
+  );
+
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem("jadwal-krl-selected", JSON.stringify(selected));
+  }, [selected]);
 
   return (
     <main className="flex min-h-screen bg-black text-white">
       <section className="mx-auto flex w-full max-w-[500px] flex-col gap-2">
-        <nav className="h-[30px] px-[12px] py-[18px]">
-          <h1 className="font-mono tracking-tight opacity-30">
+        <nav className="flex h-fit w-full items-center justify-between px-[12px] pt-[20px]">
+          <h1 className="font-mono text-lg tracking-tight opacity-30">
             jadwal-krl.com
           </h1>
+          <button
+            type="button"
+            onClick={() => {
+              setOpen((prev) => !prev);
+            }}
+            className={cn("rotate-0 pr-0.5 transition-all", {
+              "text-white/50 hover:text-white [&>svg]:rotate-45": isOpen,
+              "[&>svg]:rotate-0": !isOpen,
+            })}
+          >
+            <Plus
+              size={20}
+              className="shrink-0 transition-transform duration-200"
+            />
+          </button>
         </nav>
 
-        <section className="flex flex-col gap-1.5 px-[12px] pb-20">
-          {/*           <Popover.Root open={open} onOpenChange={setOpen}>
-            <Popover.Trigger asChild>
-              <button
-                type="button"
-                aria-expanded={open}
-                className="flex w-full items-center justify-between rounded-md border-[1px] border-white/20 p-2 text-white/50"
-              >
-                Cari stasiun
-                <ChevronDown size={16} className="ml-2 shrink-0 opacity-50" />
-              </button>
-            </Popover.Trigger>
-            <Popover.Content className="w-[80vw] p-0 sm:w-[500px]">
-              <Command.Root className="overflow-y-scroll">
-                <Command.Input placeholder="Cari stasiun.." className="h-9" />
-                <Command.Empty>Stasiun tidak dapat ditemukan</Command.Empty>
-                {selected.length > 0 ? (
-                  <Command.Group heading="Tersimpan">
-                    {station.data
-                      ?.filter((s) =>
+        {isOpen ? (
+          <section className="flex flex-col gap-1.5 px-[4px] pb-20">
+            <div className="my-2 px-[8px]">
+              <input
+                type="text"
+                onChange={(e) => setSearch(e.currentTarget.value)}
+                placeholder="Cari stasiun keberangkatan"
+                className="w-full rounded-md border-[1px] border-white/20 bg-transparent p-2 text-white placeholder:text-white/30"
+              />
+            </div>
+            {selected.length > 0 ? (
+              <div className="mt-2 flex flex-col gap-1">
+                <h1 className="px-[8px] text-sm opacity-50">Tersimpan</h1>
+                {station.data
+                  ?.filter((s) => {
+                    if (search.length > 0) {
+                      return (
                         selected.includes(
                           `${s.id}-${s.name}`.toLocaleLowerCase(),
-                        ),
-                      )
-                      .sort((a, b) => a.name.localeCompare(b.name))
-                      .map((s) => (
-                        <Command.Item
-                          key={s.id}
-                          value={`${s.id}-${s.name}`}
-                          onSelect={(currentValue) => {
-                            if (selected.includes(currentValue)) {
-                              setSelected((prev) =>
-                                prev.filter((item) => item !== currentValue),
-                              );
-                            } else {
-                              setSelected((prev) => [...prev, currentValue]);
-                            }
-                          }}
-                          className="flex items-center"
-                        >
-                          {s.name}
-                          {selected.includes(
-                            `${s.id}-${s.name}`.toLocaleLowerCase(),
-                          ) ? (
-                            <Check size={16} className={cn("ml-auto")} />
-                          ) : null}
-                        </Command.Item>
-                      ))}
-                  </Command.Group>
-                ) : null}
-                <Command.Separator />
-                <Command.Group heading="Belum Tersimpan">
-                  {station.data
-                    ?.filter((s) =>
-                      selected.length > 0
-                        ? !selected.includes(
-                            `${s.id}-${s.name}`.toLocaleLowerCase(),
-                          )
-                        : true,
-                    )
-                    .sort((a, b) => a.name.localeCompare(b.name))
-                    .map((s) => (
-                      <Command.Item
-                        key={s.id}
-                        value={`${s.id}-${s.name}`}
-                        onSelect={(currentValue) => {
-                          if (selected.includes(currentValue)) {
-                            setSelected((prev) =>
-                              prev.filter((item) => item !== currentValue),
-                            );
-                          } else {
-                            setSelected((prev) => [...prev, currentValue]);
-                          }
-                        }}
-                        className="flex items-center"
-                      >
-                        {s.name}
-                        {selected.includes(
-                          `${s.id}-${s.name}`.toLocaleLowerCase(),
-                        ) ? (
+                        ) &&
+                        s.name
+                          .toLocaleLowerCase()
+                          .includes(search.toLocaleLowerCase())
+                      );
+                    }
+                    return selected.includes(
+                      `${s.id}-${s.name}`.toLocaleLowerCase(),
+                    );
+                  })
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((s) => (
+                    <button
+                      type="button"
+                      key={s.id}
+                      className="flex items-center rounded-md px-[8px] py-[4px] text-left capitalize transition-all hover:bg-white/10"
+                      disabled={selected.length === 1}
+                      onClick={() => {
+                        const currentValue =
+                          `${s.id}-${s.name}`.toLocaleLowerCase();
+                        if (selected.includes(currentValue)) {
+                          setSelected((prev) =>
+                            prev.filter((item) => item !== currentValue),
+                          );
+                        } else {
+                          setSelected((prev) => [...prev, currentValue]);
+                        }
+                      }}
+                    >
+                      {s.name.toLocaleLowerCase()}
+                      {selected.includes(
+                        `${s.id}-${s.name}`.toLocaleLowerCase(),
+                      ) ? (
+                        selected.length === 1 ? null : (
                           <Check size={16} className={cn("ml-auto")} />
-                        ) : null}
-                      </Command.Item>
-                    ))}
-                </Command.Group>
-              </Command.Root>
-            </Popover.Content>
-          </Popover.Root> */}
-
-          {selected.length > 0 ? (
-            <div className="flex flex-col gap-1">
-              {selected.map((s) => (
-                <StationItem
-                  key={s}
-                  station={{
-                    id: s.split("-")[0]!,
-                    name: s.split("-")[1]!,
-                  }}
-                />
-              ))}
+                        )
+                      ) : null}
+                    </button>
+                  ))}
+              </div>
+            ) : null}
+            <span className="h-[1px] w-full border-b px-[8px] py-2" />
+            <div className="mt-2 flex flex-col gap-1">
+              <h1 className="px-[8px] text-sm opacity-50">Belum Tesimpan</h1>
+              {station.data
+                ?.filter((s) =>
+                  selected.length > 0
+                    ? !selected.includes(
+                        `${s.id}-${s.name}`.toLocaleLowerCase(),
+                      )
+                    : true,
+                )
+                .filter((s) => {
+                  if (search.length > 0) {
+                    return s.name
+                      .toLocaleLowerCase()
+                      .includes(search.toLocaleLowerCase());
+                  }
+                  return true;
+                })
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((s) => (
+                  <button
+                    type="button"
+                    key={s.id}
+                    className="flex items-center rounded-md px-[8px] py-[4px] text-left capitalize transition-all hover:bg-white/10"
+                    onClick={() => {
+                      const currentValue =
+                        `${s.id}-${s.name}`.toLocaleLowerCase();
+                      if (selected.includes(currentValue)) {
+                        setSelected((prev) =>
+                          prev.filter((item) => item !== currentValue),
+                        );
+                      } else {
+                        setSelected((prev) => [...prev, currentValue]);
+                      }
+                    }}
+                  >
+                    {s.name.toLocaleLowerCase()}
+                    {selected.includes(
+                      `${s.id}-${s.name}`.toLocaleLowerCase(),
+                    ) ? (
+                      <Check size={16} className={cn("ml-auto")} />
+                    ) : null}
+                  </button>
+                ))}
             </div>
-          ) : null}
-        </section>
+          </section>
+        ) : (
+          <section className="flex flex-col gap-1.5 px-[12px] pb-20">
+            {selected.length > 0 ? (
+              <div className="flex flex-col gap-1">
+                {selected.map((s) => (
+                  <StationItem
+                    key={s}
+                    station={{
+                      id: s.split("-")[0]!,
+                      name: s.split("-")[1]!,
+                    }}
+                  />
+                ))}
+              </div>
+            ) : null}
+          </section>
+        )}
       </section>
     </main>
   );
