@@ -387,7 +387,7 @@ const MainPage = () => {
           </section>
         ) : (
           <section className="flex flex-col gap-1.5 px-[12px] pb-20">
-            {isLoaded ? (
+            {isLoaded || selected.length === 0 ? (
               <div className="mt-5 flex flex-col gap-5">
                 <div className="flex w-full flex-col gap-2 pr-1 pt-2 text-left">
                   <div className="h-[13px] w-[80px] rounded-md bg-white/10" />
