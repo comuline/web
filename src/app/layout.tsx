@@ -4,10 +4,11 @@ import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 
 import { TRPCReactProvider } from "@/trpc/react";
+import Script from "next/script";
 
 export const metadata = {
-  title: "Jadwal KRL",
-  description: "Jadwal KRL",
+  title: `Jadwal KRL — Cari & Simpan Jadwal KRL ${new Date().getFullYear()}`,
+  description: `Platform website untuk mencari, menyimpan, dan memantau jadwal KRL Jakarta dan Yogyakarta dengan mudah dan cepat.`,
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
@@ -21,6 +22,11 @@ export default function RootLayout({
       <body>
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>
+      <Script
+        defer
+        src="https://analytics.zulio.me/script.js"
+        data-website-id="20b80658-98dc-4ef8-92d5-0a7d7d153ad0"
+      />
     </html>
   );
 }
