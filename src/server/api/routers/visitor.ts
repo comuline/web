@@ -16,9 +16,7 @@ export const visitorRoute = createTRPCRouter({
   get: publicProcedure.query(async ({ ctx }) => {
     const count = await ctx.cache.get("visitor");
 
-    if (!count) {
-      return 0;
-    }
+    if (!count || Number(count) <= 0) return 0;
 
     return Number(count);
   }),
