@@ -8,6 +8,7 @@ export const env = createEnv({
    */
   server: {
     API_URL: z.string().url(),
+    REDIS_URL: z.string().url(),
     NODE_ENV: z.enum(["development", "test", "production"]),
   },
 
@@ -26,6 +27,7 @@ export const env = createEnv({
    */
   runtimeEnv: {
     API_URL: process.env.API_URL,
+    REDIS_URL: process.env.REDIS_URL,
     NODE_ENV: process.env.NODE_ENV,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },

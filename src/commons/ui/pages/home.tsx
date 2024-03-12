@@ -234,6 +234,8 @@ const StationItem = ({
 
 const MainPage = () => {
   const station = api.station.getAll.useQuery();
+  const { mutate: handleVisitor } = api.visitor.set.useMutation();
+  const { data: visitorCount } = api.visitor.get.useQuery();
   const [isAdding, setAdding] = useState(false);
   const [isSearching, setSearching] = useState(false);
   const [selected, setSelected] = useState<
@@ -287,6 +289,20 @@ const MainPage = () => {
     setSort({ by: "date", order: "desc" });
     setLoaded(false);
     return;
+  }, []);
+
+  useEffect(() => {
+    void handleVisitor("add");
+
+    window.addEventListener("beforeunload", () => {
+      void handleVisitor("sub");
+    });
+
+    return () => {
+      window.removeEventListener("beforeunload", () => {
+        void handleVisitor("sub");
+      });
+    };
   }, []);
 
   return (
@@ -634,6 +650,12 @@ const MainPage = () => {
         )}
 
         <div className="flex w-full flex-col gap-[10px] py-10 text-center text-sm">
+          {!visitorCount || visitorCount === 0 ? null : (
+            <div className="mx-auto flex items-center gap-2">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-green-500 " />
+              <p className="my-2 opacity-50">{visitorCount} live visitor</p>
+            </div>
+          )}
           <p className="mx-auto w-2/3 opacity-50">
             Made as an act of belief that public transportation data should be
             publicly accessible
