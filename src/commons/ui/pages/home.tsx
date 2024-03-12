@@ -14,6 +14,7 @@ import {
   Search,
   X,
 } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 interface TrainData {
@@ -421,7 +422,7 @@ const MainPage = () => {
         </nav>
 
         {isAdding ? (
-          <section className="flex flex-col gap-1.5 px-[4px] pb-20 pt-[10px]">
+          <section className="flex flex-col gap-1.5 px-[4px] pt-[10px]">
             {selected.length > 0 ? (
               <div className="mt-2 flex flex-col gap-1">
                 <h1 className="px-[8px] text-sm opacity-50">Tersimpan</h1>
@@ -559,7 +560,7 @@ const MainPage = () => {
             </div>
           </section>
         ) : (
-          <section className="flex flex-col gap-1.5 px-[12px] pb-20">
+          <section className="flex flex-col gap-1.5 px-[12px]">
             {isLoaded || selected.length === 0 ? (
               <div className="mt-5 flex flex-col gap-5">
                 <div className="flex w-full flex-col gap-2 pr-1 pt-2 text-left">
@@ -631,6 +632,31 @@ const MainPage = () => {
             </button>
           </section>
         )}
+
+        <div className="flex w-full flex-col gap-[10px] py-10 text-center text-sm">
+          <p className="mx-auto w-2/3 opacity-50">
+            Made as an act of belief that public transportation data should be
+            publicly accessible
+          </p>
+
+          <div className="mx-auto flex  items-center gap-[10px]">
+            <Link
+              target="_blank"
+              href="https://www.api.jadwal-krl.com/docs"
+              className="underline opacity-50 transition hover:opacity-100"
+            >
+              API
+            </Link>
+            <p className="opacity-30">⋅</p>
+            <Link
+              target="_blank"
+              href="https://github.com/abielzulio/jadwal-krl"
+              className="underline opacity-50 transition hover:opacity-100"
+            >
+              GitHub
+            </Link>
+          </div>
+        </div>
       </section>
     </main>
   );
