@@ -1,10 +1,19 @@
 "use client";
 
 import * as Accordion from "@/commons/ui/components/accordion";
+import * as Dropdown from "@/commons/ui/components/dropdown";
 import { cn } from "@/commons/utils/cn";
 import { getRelativeTimeString, removeSeconds } from "@/commons/utils/date";
 import { api } from "@/trpc/react";
-import { Check, Plus } from "lucide-react";
+import {
+  ArrowDownAZ,
+  ArrowUpDown,
+  ArrowUpZA,
+  Minus,
+  Plus,
+  Search,
+  X,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface TrainData {
@@ -171,7 +180,6 @@ const StationItem = ({
                             </div>
                           </div>
                         ) : null}
-                        <div className="flex items-start justify-between gap-2 "></div>
                         {(groupedData[lineKey]?.[destKey] ?? []).slice(
                           5,
                           (groupedData[lineKey]?.[destKey] ?? []).length - 5,
@@ -229,23 +237,55 @@ const StationItem = ({
 const MainPage = () => {
   const station = api.station.getAll.useQuery();
   const [isOpen, setOpen] = useState(false);
-  const [selected, setSelected] = useState<Array<string>>([]);
+  const [selected, setSelected] = useState<
+    Array<{
+      id: string;
+      name: string;
+      savedAt: string;
+    }>
+  >([]);
   const [isLoaded, setLoaded] = useState(true);
   const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<{
+    by: "name" | "date";
+    order: "asc" | "desc";
+  } | null>(null);
 
   useEffect(() => {
     if (selected.length === 0) return;
-    localStorage.setItem("jadwal-krl-selected", JSON.stringify(selected));
+    localStorage.setItem("jadwal-krl-saved", JSON.stringify(selected));
   }, [selected]);
 
   useEffect(() => {
-    const saved = localStorage.getItem("jadwal-krl-selected");
-    if (saved) {
-      setSelected(JSON.parse(saved));
+    if (!sort) return;
+    localStorage.setItem("jadwal-krl-sort", JSON.stringify(sort));
+  }, [sort]);
+
+  useEffect(() => {
+    const saved = {
+      selected: localStorage.getItem("jadwal-krl-saved"),
+      sort: localStorage.getItem("jadwal-krl-sort"),
+    };
+    if (saved.selected ?? saved.sort) {
+      if (saved.sort) setSort(JSON.parse(saved.sort));
+      if (saved.selected) setSelected(JSON.parse(saved.selected));
       setLoaded(false);
       return;
     }
-    setSelected(["boo-bogor", "bks-bekasi"]);
+    const now = new Date().toISOString();
+    setSelected([
+      {
+        id: "bks",
+        name: "Bekasi",
+        savedAt: now,
+      },
+      {
+        id: "boo",
+        name: "Bogor",
+        savedAt: now,
+      },
+    ]);
+    setSort({ by: "date", order: "desc" });
     setLoaded(false);
     return;
   }, []);
@@ -257,21 +297,96 @@ const MainPage = () => {
           <h1 className="font-mono text-lg tracking-tight opacity-30">
             jadwal-krl.com
           </h1>
-          <button
-            type="button"
-            onClick={() => {
-              setOpen((prev) => !prev);
-            }}
-            className={cn("rotate-0 pr-0.5 transition-all", {
-              "text-white/50 hover:text-white [&>svg]:rotate-45": isOpen,
-              "[&>svg]:rotate-0": !isOpen,
-            })}
-          >
-            <Plus
-              size={20}
-              className="shrink-0 transition-transform duration-200"
-            />
-          </button>
+          <div className="flex items-center gap-5">
+            {isOpen ? null : (
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen((prev) => !prev);
+                  setSearch("");
+                }}
+                className={cn("transition-all duration-200", {
+                  "visible text-white/50 hover:text-white": !isOpen,
+                  "invisible opacity-0": isOpen,
+                })}
+              >
+                <Search size={20} className="shrink-0" />
+              </button>
+            )}
+            {sort ? (
+              <Dropdown.Root>
+                <Dropdown.Trigger asChild>
+                  <button
+                    type="button"
+                    className={cn("transition-all duration-200", {
+                      "visible text-white/50 hover:text-white": !isOpen,
+                      "invisible opacity-0": isOpen,
+                    })}
+                  >
+                    <ArrowUpDown size={20} className="shrink-0 " />
+                  </button>
+                </Dropdown.Trigger>
+                <Dropdown.Content side="bottom" align="end" sideOffset={10}>
+                  <Dropdown.Item
+                    className="flex items-center gap-2"
+                    onClick={() =>
+                      setSort({
+                        by: "name",
+                        order: sort.order === "asc" ? "desc" : "asc",
+                      })
+                    }
+                  >
+                    {sort.by === "name" ? (
+                      sort.order === "desc" ? (
+                        <ArrowDownAZ size={14} className="opacity-80" />
+                      ) : (
+                        <ArrowUpZA size={14} className="opacity-80" />
+                      )
+                    ) : (
+                      <Minus size={14} className="opacity-80" />
+                    )}
+                    Urut nama
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    className="flex items-center gap-2"
+                    onClick={() =>
+                      setSort({
+                        by: "date",
+                        order: sort.order === "asc" ? "desc" : "asc",
+                      })
+                    }
+                  >
+                    {sort.by === "date" ? (
+                      sort.order === "desc" ? (
+                        <ArrowDownAZ size={14} className="opacity-80" />
+                      ) : (
+                        <ArrowUpZA size={14} className="opacity-80" />
+                      )
+                    ) : (
+                      <Minus size={14} className="opacity-80" />
+                    )}
+                    Urut tanggal ditambahkan
+                  </Dropdown.Item>
+                </Dropdown.Content>
+              </Dropdown.Root>
+            ) : null}
+            <button
+              type="button"
+              onClick={() => {
+                setOpen((prev) => !prev);
+                setSearch("");
+              }}
+              className={cn("transition-all", {
+                "text-white/50 hover:text-white [&>svg]:rotate-45": isOpen,
+                "[&>svg]:rotate-0": !isOpen,
+              })}
+            >
+              <Plus
+                size={20}
+                className="shrink-0 transition-transform duration-200"
+              />
+            </button>
+          </div>
         </nav>
 
         {isOpen ? (
@@ -291,43 +406,60 @@ const MainPage = () => {
                   ?.filter((s) => {
                     if (search.length > 0) {
                       return (
-                        selected.includes(
-                          `${s.id}-${s.name}`.toLocaleLowerCase(),
-                        ) &&
+                        selected
+                          .map(({ name }) => name.toLocaleLowerCase())
+                          .includes(s.name.toLocaleLowerCase()) &&
                         s.name
                           .toLocaleLowerCase()
                           .includes(search.toLocaleLowerCase())
                       );
                     }
-                    return selected.includes(
-                      `${s.id}-${s.name}`.toLocaleLowerCase(),
-                    );
+                    return selected
+                      .map(({ name }) => name.toLocaleLowerCase())
+                      .includes(s.name.toLocaleLowerCase());
                   })
                   .sort((a, b) => a.name.localeCompare(b.name))
                   .map((s) => (
                     <button
                       type="button"
                       key={s.id}
-                      className="flex items-center rounded-md px-[8px] py-[4px] text-left capitalize transition-all hover:bg-white/10"
+                      className="group flex items-center rounded-md px-[8px] py-[4px] text-left capitalize transition-all hover:bg-white/10"
                       disabled={selected.length === 1}
                       onClick={() => {
-                        const currentValue =
-                          `${s.id}-${s.name}`.toLocaleLowerCase();
-                        if (selected.includes(currentValue)) {
+                        if (
+                          selected
+                            .map(({ name }) => name.toLocaleLowerCase())
+                            .includes(s.name.toLocaleLowerCase())
+                        ) {
                           setSelected((prev) =>
-                            prev.filter((item) => item !== currentValue),
+                            prev.filter(
+                              (item) =>
+                                item.name !== s.name.toLocaleLowerCase(),
+                            ),
                           );
                         } else {
-                          setSelected((prev) => [...prev, currentValue]);
+                          setSelected((prev) => [
+                            ...prev,
+                            {
+                              id: s.id,
+                              name: s.name,
+                              savedAt: new Date().toISOString(),
+                            },
+                          ]);
                         }
                       }}
                     >
                       {s.name.toLocaleLowerCase()}
-                      {selected.includes(
-                        `${s.id}-${s.name}`.toLocaleLowerCase(),
-                      ) ? (
+                      {selected
+                        .map(({ name }) => name.toLocaleLowerCase())
+                        .includes(s.name.toLocaleLowerCase()) ? (
                         selected.length === 1 ? null : (
-                          <Check size={16} className={cn("ml-auto")} />
+                          <X
+                            size={16}
+                            className={cn(
+                              "ml-auto opacity-50 transition group-hover:opacity-100",
+                            )}
+                          />
                         )
                       ) : null}
                     </button>
@@ -340,9 +472,9 @@ const MainPage = () => {
               {station.data
                 ?.filter((s) =>
                   selected.length > 0
-                    ? !selected.includes(
-                        `${s.id}-${s.name}`.toLocaleLowerCase(),
-                      )
+                    ? !selected
+                        .map(({ name }) => name.toLocaleLowerCase())
+                        .includes(s.name.toLocaleLowerCase())
                     : true,
                 )
                 .filter((s) => {
@@ -360,23 +492,29 @@ const MainPage = () => {
                     key={s.id}
                     className="flex items-center rounded-md px-[8px] py-[4px] text-left capitalize transition-all hover:bg-white/10"
                     onClick={() => {
-                      const currentValue =
-                        `${s.id}-${s.name}`.toLocaleLowerCase();
-                      if (selected.includes(currentValue)) {
+                      if (
+                        selected
+                          .map(({ name }) => name.toLocaleLowerCase())
+                          .includes(s.name.toLocaleLowerCase())
+                      ) {
                         setSelected((prev) =>
-                          prev.filter((item) => item !== currentValue),
+                          prev.filter(
+                            (item) => item.name !== s.name.toLocaleLowerCase(),
+                          ),
                         );
                       } else {
-                        setSelected((prev) => [...prev, currentValue]);
+                        setSelected((prev) => [
+                          ...prev,
+                          {
+                            id: s.id,
+                            name: s.name,
+                            savedAt: new Date().toISOString(),
+                          },
+                        ]);
                       }
                     }}
                   >
                     {s.name.toLocaleLowerCase()}
-                    {selected.includes(
-                      `${s.id}-${s.name}`.toLocaleLowerCase(),
-                    ) ? (
-                      <Check size={16} className={cn("ml-auto")} />
-                    ) : null}
                   </button>
                 ))}
             </div>
@@ -396,15 +534,42 @@ const MainPage = () => {
               </div>
             ) : selected.length > 0 ? (
               <div className="flex flex-col gap-1">
-                {selected.map((s) => (
-                  <StationItem
-                    key={s}
-                    station={{
-                      id: s.split("-")[0]!,
-                      name: s.split("-")[1]!,
-                    }}
-                  />
-                ))}
+                {selected
+                  .sort((a, b) => {
+                    if (!sort) return 0;
+                    const aName = a.name.toLocaleLowerCase();
+                    const bName = b.name.toLocaleLowerCase();
+
+                    switch (sort.by) {
+                      case "name":
+                        if (sort.order === "asc") {
+                          return aName.localeCompare(bName);
+                        }
+                        return bName.localeCompare(aName);
+                      case "date":
+                        if (sort.order === "asc") {
+                          return (
+                            new Date(a.savedAt).getTime() -
+                            new Date(b.savedAt).getTime()
+                          );
+                        }
+                        return (
+                          new Date(b.savedAt).getTime() -
+                          new Date(a.savedAt).getTime()
+                        );
+                      default:
+                        return 0;
+                    }
+                  })
+                  .map((s) => (
+                    <StationItem
+                      key={s.id}
+                      station={{
+                        id: s.id,
+                        name: s.name,
+                      }}
+                    />
+                  ))}
               </div>
             ) : null}
           </section>
