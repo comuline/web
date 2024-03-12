@@ -303,6 +303,7 @@ const MainPage = () => {
         void handleVisitor("sub");
       });
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
