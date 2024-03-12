@@ -38,8 +38,6 @@ const StationItem = ({
 }) => {
   const { data, isLoading } = api.schedule.getByStationId.useQuery(station.id);
 
-  const [isOpen, setOpen] = useState(true);
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const groupedData: GroupedData = data?.reduce((acc: any, obj) => {
     const lineKey = `${obj.line}-${obj.color}`;
@@ -66,7 +64,6 @@ const StationItem = ({
       type="multiple"
       className="w-full pr-1 pt-2"
       defaultValue={[station.id]}
-      onValueChange={(v) => setOpen(v.length > 0)}
     >
       <Accordion.Item value={station.id}>
         <Accordion.Trigger className="items-center hover:no-underline">
@@ -236,7 +233,8 @@ const StationItem = ({
 
 const MainPage = () => {
   const station = api.station.getAll.useQuery();
-  const [isOpen, setOpen] = useState(false);
+  const [isAdding, setAdding] = useState(false);
+  const [isSearching, setSearching] = useState(false);
   const [selected, setSelected] = useState<
     Array<{
       id: string;
@@ -292,128 +290,143 @@ const MainPage = () => {
 
   return (
     <main className="flex min-h-screen bg-black text-white">
-      <section className="mx-auto flex w-full max-w-[500px] flex-col gap-2">
-        <nav className="flex h-fit w-full items-center justify-between px-[12px] pt-[20px]">
-          <h1 className="font-mono text-lg tracking-tight opacity-30">
-            jadwal-krl.com
-          </h1>
-          <div className="flex items-center gap-5">
-            {isOpen ? null : (
+      <section className="relative mx-auto flex w-full max-w-[500px] flex-col">
+        <nav className="sticky top-0 z-10 flex h-fit flex-col gap-2 bg-black px-[12px] pt-[20px]">
+          <div
+            className={cn("flex w-full items-center justify-between", {
+              "pb-[10px]": !isAdding || !isSearching,
+            })}
+          >
+            <h1 className="font-mono text-lg tracking-tight opacity-30">
+              jadwal-krl.com
+            </h1>
+            <div className="flex items-center gap-5">
+              {isAdding ? null : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearching((prev) => !prev);
+                    setAdding(false);
+                    setSearch("");
+                  }}
+                  className={cn("transition-all duration-200", {
+                    "visible text-white/50 hover:text-white": !isAdding,
+                    "invisible opacity-0": isAdding,
+                  })}
+                >
+                  {isSearching ? (
+                    <X size={20} />
+                  ) : (
+                    <Search
+                      size={20}
+                      className="shrink-0 transition-transform duration-200"
+                    />
+                  )}
+                </button>
+              )}
+
+              {sort ? (
+                <Dropdown.Root>
+                  <Dropdown.Trigger asChild>
+                    <button
+                      type="button"
+                      className={cn("transition-all duration-200", {
+                        "visible text-white/50 hover:text-white": !isAdding,
+                        "invisible opacity-0": isAdding,
+                      })}
+                    >
+                      <ArrowUpDown size={20} className="shrink-0 " />
+                    </button>
+                  </Dropdown.Trigger>
+                  <Dropdown.Content side="bottom" align="end" sideOffset={10}>
+                    <Dropdown.Item
+                      className="flex items-center gap-2"
+                      onClick={() =>
+                        setSort({
+                          by: "name",
+                          order: sort.order === "asc" ? "desc" : "asc",
+                        })
+                      }
+                    >
+                      {sort.by === "name" ? (
+                        sort.order === "desc" ? (
+                          <ArrowDownAZ size={14} className="opacity-80" />
+                        ) : (
+                          <ArrowUpZA size={14} className="opacity-80" />
+                        )
+                      ) : (
+                        <Minus size={14} className="opacity-80" />
+                      )}
+                      Urut nama
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      className="flex items-center gap-2"
+                      onClick={() =>
+                        setSort({
+                          by: "date",
+                          order: sort.order === "asc" ? "desc" : "asc",
+                        })
+                      }
+                    >
+                      {sort.by === "date" ? (
+                        sort.order === "desc" ? (
+                          <ArrowDownAZ size={14} className="opacity-80" />
+                        ) : (
+                          <ArrowUpZA size={14} className="opacity-80" />
+                        )
+                      ) : (
+                        <Minus size={14} className="opacity-80" />
+                      )}
+                      Urut tanggal ditambahkan
+                    </Dropdown.Item>
+                  </Dropdown.Content>
+                </Dropdown.Root>
+              ) : null}
               <button
                 type="button"
                 onClick={() => {
-                  setOpen((prev) => !prev);
+                  setAdding((prev) => !prev);
+                  setSearching(false);
                   setSearch("");
                 }}
-                className={cn("transition-all duration-200", {
-                  "visible text-white/50 hover:text-white": !isOpen,
-                  "invisible opacity-0": isOpen,
+                className={cn("transition-all", {
+                  "text-white/50 hover:text-white [&>svg]:rotate-45": isAdding,
+                  "[&>svg]:rotate-0": !isAdding,
                 })}
               >
-                <Search size={20} className="shrink-0" />
+                <Plus
+                  size={20}
+                  className="shrink-0 transition-transform duration-200"
+                />
               </button>
-            )}
-            {sort ? (
-              <Dropdown.Root>
-                <Dropdown.Trigger asChild>
-                  <button
-                    type="button"
-                    className={cn("transition-all duration-200", {
-                      "visible text-white/50 hover:text-white": !isOpen,
-                      "invisible opacity-0": isOpen,
-                    })}
-                  >
-                    <ArrowUpDown size={20} className="shrink-0 " />
-                  </button>
-                </Dropdown.Trigger>
-                <Dropdown.Content side="bottom" align="end" sideOffset={10}>
-                  <Dropdown.Item
-                    className="flex items-center gap-2"
-                    onClick={() =>
-                      setSort({
-                        by: "name",
-                        order: sort.order === "asc" ? "desc" : "asc",
-                      })
-                    }
-                  >
-                    {sort.by === "name" ? (
-                      sort.order === "desc" ? (
-                        <ArrowDownAZ size={14} className="opacity-80" />
-                      ) : (
-                        <ArrowUpZA size={14} className="opacity-80" />
-                      )
-                    ) : (
-                      <Minus size={14} className="opacity-80" />
-                    )}
-                    Urut nama
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    className="flex items-center gap-2"
-                    onClick={() =>
-                      setSort({
-                        by: "date",
-                        order: sort.order === "asc" ? "desc" : "asc",
-                      })
-                    }
-                  >
-                    {sort.by === "date" ? (
-                      sort.order === "desc" ? (
-                        <ArrowDownAZ size={14} className="opacity-80" />
-                      ) : (
-                        <ArrowUpZA size={14} className="opacity-80" />
-                      )
-                    ) : (
-                      <Minus size={14} className="opacity-80" />
-                    )}
-                    Urut tanggal ditambahkan
-                  </Dropdown.Item>
-                </Dropdown.Content>
-              </Dropdown.Root>
-            ) : null}
-            <button
-              type="button"
-              onClick={() => {
-                setOpen((prev) => !prev);
-                setSearch("");
-              }}
-              className={cn("transition-all", {
-                "text-white/50 hover:text-white [&>svg]:rotate-45": isOpen,
-                "[&>svg]:rotate-0": !isOpen,
-              })}
-            >
-              <Plus
-                size={20}
-                className="shrink-0 transition-transform duration-200"
-              />
-            </button>
+            </div>
           </div>
+          {isAdding ? (
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.currentTarget.value)}
+              placeholder="Cari stasiun keberangkatan"
+              className="mb-3 w-full rounded-md border-[1px] border-white/20 bg-transparent p-2 text-white placeholder:text-white/30"
+            />
+          ) : isSearching ? (
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.currentTarget.value)}
+              placeholder="Cari stasiun keberangkatan"
+              className="mb-3 w-full rounded-md border-[1px] border-white/20 bg-transparent p-2 text-white placeholder:text-white/30"
+            />
+          ) : null}
         </nav>
 
-        {isOpen ? (
-          <section className="flex flex-col gap-1.5 px-[4px] pb-20">
-            <div className="my-2 px-[8px]">
-              <input
-                type="text"
-                onChange={(e) => setSearch(e.currentTarget.value)}
-                placeholder="Cari stasiun keberangkatan"
-                className="w-full rounded-md border-[1px] border-white/20 bg-transparent p-2 text-white placeholder:text-white/30"
-              />
-            </div>
+        {isAdding ? (
+          <section className="flex flex-col gap-1.5 px-[4px] pb-20 pt-[10px]">
             {selected.length > 0 ? (
               <div className="mt-2 flex flex-col gap-1">
                 <h1 className="px-[8px] text-sm opacity-50">Tersimpan</h1>
                 {station.data
                   ?.filter((s) => {
-                    if (search.length > 0) {
-                      return (
-                        selected
-                          .map(({ name }) => name.toLocaleLowerCase())
-                          .includes(s.name.toLocaleLowerCase()) &&
-                        s.name
-                          .toLocaleLowerCase()
-                          .includes(search.toLocaleLowerCase())
-                      );
-                    }
                     return selected
                       .map(({ name }) => name.toLocaleLowerCase())
                       .includes(s.name.toLocaleLowerCase());
@@ -434,7 +447,9 @@ const MainPage = () => {
                           setSelected((prev) =>
                             prev.filter(
                               (item) =>
-                                item.name !== s.name.toLocaleLowerCase(),
+                                item.name.toLocaleLowerCase() !==
+                                  s.name.toLocaleLowerCase() &&
+                                item.id !== s.id,
                             ),
                           );
                         } else {
@@ -468,8 +483,8 @@ const MainPage = () => {
             ) : null}
             <span className="h-[1px] w-full border-b px-[8px] py-2" />
             <div className="mt-2 flex flex-col gap-1">
-              <h1 className="px-[8px] text-sm opacity-50">Belum Tesimpan</h1>
-              {station.data
+              <h1 className="px-[8px] text-sm opacity-50">Belum Tersimpan</h1>
+              {(station.data ?? [])
                 ?.filter((s) =>
                   selected.length > 0
                     ? !selected
@@ -484,39 +499,63 @@ const MainPage = () => {
                       .includes(search.toLocaleLowerCase());
                   }
                   return true;
-                })
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map((s) => (
-                  <button
-                    type="button"
-                    key={s.id}
-                    className="flex items-center rounded-md px-[8px] py-[4px] text-left capitalize transition-all hover:bg-white/10"
-                    onClick={() => {
-                      if (
-                        selected
+                }).length > 0 ? (
+                station.data
+                  ?.filter((s) =>
+                    selected.length > 0
+                      ? !selected
                           .map(({ name }) => name.toLocaleLowerCase())
                           .includes(s.name.toLocaleLowerCase())
-                      ) {
-                        setSelected((prev) =>
-                          prev.filter(
-                            (item) => item.name !== s.name.toLocaleLowerCase(),
-                          ),
-                        );
-                      } else {
-                        setSelected((prev) => [
-                          ...prev,
-                          {
-                            id: s.id,
-                            name: s.name,
-                            savedAt: new Date().toISOString(),
-                          },
-                        ]);
-                      }
-                    }}
-                  >
-                    {s.name.toLocaleLowerCase()}
-                  </button>
-                ))}
+                      : true,
+                  )
+                  .filter((s) => {
+                    if (search.length > 0) {
+                      return s.name
+                        .toLocaleLowerCase()
+                        .includes(search.toLocaleLowerCase());
+                    }
+                    return true;
+                  })
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((s) => (
+                    <button
+                      type="button"
+                      key={s.id}
+                      className="flex items-center rounded-md px-[8px] py-[4px] text-left capitalize transition-all hover:bg-white/10"
+                      onClick={() => {
+                        if (
+                          selected
+                            .map(({ name }) => name.toLocaleLowerCase())
+                            .includes(s.name.toLocaleLowerCase())
+                        ) {
+                          setSelected((prev) =>
+                            prev.filter(
+                              (item) =>
+                                item.name.toLocaleLowerCase() !==
+                                  s.name.toLocaleLowerCase() &&
+                                item.id !== s.id,
+                            ),
+                          );
+                        } else {
+                          setSelected((prev) => [
+                            ...prev,
+                            {
+                              id: s.id,
+                              name: s.name,
+                              savedAt: new Date().toISOString(),
+                            },
+                          ]);
+                        }
+                      }}
+                    >
+                      {s.name.toLocaleLowerCase()}
+                    </button>
+                  ))
+              ) : (
+                <p className="px-[8px] py-1 text-sm opacity-50">
+                  Tidak tersedia
+                </p>
+              )}
             </div>
           </section>
         ) : (
@@ -561,6 +600,14 @@ const MainPage = () => {
                         return 0;
                     }
                   })
+                  .filter((s) => {
+                    if (search.length > 0) {
+                      return s.name
+                        .toLocaleLowerCase()
+                        .includes(search.toLocaleLowerCase());
+                    }
+                    return true;
+                  })
                   .map((s) => (
                     <StationItem
                       key={s.id}
@@ -572,6 +619,16 @@ const MainPage = () => {
                   ))}
               </div>
             ) : null}
+            <button
+              type="button"
+              onClick={() => setAdding(true)}
+              className="my-2 flex rounded-md border-[1px] border-white/10 bg-white/5 py-2.5 text-center text-sm text-white/80 transition hover:border-white/20  hover:text-white"
+            >
+              <div className="mx-auto flex items-center gap-2">
+                <Plus size={16} className="opacity-50" />
+                <span>Tambah stasiun lain</span>
+              </div>
+            </button>
           </section>
         )}
       </section>
