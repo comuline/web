@@ -128,7 +128,7 @@ const StationItem = ({
                       >
                         <div className="flex items-center justify-between gap-2 text-xs opacity-50">
                           <p>Arah menuju</p>
-                          <p>Tiba pukul</p>
+                          <p>Berangkat pukul</p>
                         </div>
                         <div className="flex items-start justify-between gap-2 ">
                           <h3 className="font text-xl font-medium capitalize">
