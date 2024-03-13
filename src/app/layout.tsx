@@ -6,19 +6,22 @@ import { GeistSans } from "geist/font/sans";
 import { TRPCReactProvider } from "@/trpc/react";
 import Script from "next/script";
 import { env } from "process";
+import { type Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: `Jadwal KRL — Cari & Simpan Jadwal KRL ${new Date().getFullYear()}`,
   description: `Platform website untuk mencari, menyimpan, dan memantau jadwal KRL Jakarta dan Yogyakarta dengan mudah dan cepat.`,
   icons: [{ rel: "icon", url: "/favicon.ico" }],
   metadataBase:
     env.NODE_ENV === "production"
       ? new URL("https://www.jadwal-krl.com")
-      : undefined,
+      : new URL("http://localhost:3000"),
   openGraph: {
     title: `Jadwal KRL — Cari & Simpan Jadwal KRL ${new Date().getFullYear()}`,
+    url: "https://www.jadwal-krl.com",
+    siteName: "Jadwal KRL",
     description: `Platform website untuk mencari, menyimpan, dan memantau jadwal KRL Jakarta dan Yogyakarta dengan mudah dan cepat.`,
-    images: "/og.png",
+    images: "https://www.jadwal-krl.com/og.png",
   },
 };
 
