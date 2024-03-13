@@ -10,10 +10,13 @@ import {
   ArrowUpDown,
   ArrowUpZA,
   Minus,
+  Moon,
   Plus,
   Search,
+  Sun,
   X,
 } from "lucide-react";
+import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -248,12 +251,14 @@ const MainPage = () => {
       savedAt: string;
     }>
   >([]);
-  const [isLoaded, setLoaded] = useState(true);
+  const [isLoaded, setLoaded] = useState(false);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<{
     by: "name" | "date";
     order: "asc" | "desc";
   } | null>(null);
+
+  const { setTheme, theme } = useTheme();
 
   useEffect(() => {
     if (selected.length === 0) return;
@@ -273,7 +278,7 @@ const MainPage = () => {
     if (saved.selected ?? saved.sort) {
       if (saved.sort) setSort(JSON.parse(saved.sort));
       if (saved.selected) setSelected(JSON.parse(saved.selected));
-      setLoaded(false);
+      setLoaded(true);
       return;
     }
     const now = new Date().toISOString();
@@ -290,7 +295,7 @@ const MainPage = () => {
       },
     ]);
     setSort({ by: "date", order: "desc" });
-    setLoaded(false);
+    setLoaded(true);
     return;
   }, []);
 
@@ -321,7 +326,18 @@ const MainPage = () => {
             <h1 className="font-mono text-lg tracking-tight opacity-30">
               jadwal-krl.com
             </h1>
+
             <div className="flex items-center gap-5">
+              {isLoaded ? (
+                <button
+                  type="button"
+                  onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+                  className="opacity-50"
+                >
+                  {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
+                </button>
+              ) : null}
+
               {isAdding ? null : (
                 <button
                   type="button"
@@ -584,7 +600,7 @@ const MainPage = () => {
           </section>
         ) : (
           <section className="flex flex-col gap-1.5 px-[12px]">
-            {isLoaded || selected.length === 0 ? (
+            {!isLoaded || selected.length === 0 ? (
               <div className="mt-5 flex flex-col gap-5">
                 <div className="flex w-full flex-col gap-2 pr-1 pt-2 text-left">
                   <div className="h-[13px] w-[80px] rounded-md bg-foreground/10" />

@@ -7,6 +7,7 @@ import { TRPCReactProvider } from "@/trpc/react";
 import Script from "next/script";
 import { env } from "process";
 import { type Metadata } from "next";
+import { MainProvider } from "@/commons/provider";
 
 export const metadata: Metadata = {
   title: `Jadwal KRL — Cari & Simpan Jadwal KRL ${new Date().getFullYear()}`,
@@ -31,9 +32,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html
+      lang="en"
+      className={`${GeistSans.variable} ${GeistMono.variable}`}
+      suppressHydrationWarning
+    >
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TRPCReactProvider>
+          <MainProvider
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </MainProvider>
+        </TRPCReactProvider>
       </body>
       <Script
         defer
