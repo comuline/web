@@ -6,19 +6,23 @@ import { GeistSans } from "geist/font/sans";
 import { TRPCReactProvider } from "@/trpc/react";
 import Script from "next/script";
 import { env } from "process";
+import { type Metadata } from "next";
+import { MainProvider } from "@/commons/provider";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: `Jadwal KRL — Cari & Simpan Jadwal KRL ${new Date().getFullYear()}`,
   description: `Platform website untuk mencari, menyimpan, dan memantau jadwal KRL Jakarta dan Yogyakarta dengan mudah dan cepat.`,
   icons: [{ rel: "icon", url: "/favicon.ico" }],
   metadataBase:
     env.NODE_ENV === "production"
       ? new URL("https://www.jadwal-krl.com")
-      : undefined,
+      : new URL("http://localhost:3000"),
   openGraph: {
     title: `Jadwal KRL — Cari & Simpan Jadwal KRL ${new Date().getFullYear()}`,
+    url: "https://www.jadwal-krl.com",
+    siteName: "Jadwal KRL",
     description: `Platform website untuk mencari, menyimpan, dan memantau jadwal KRL Jakarta dan Yogyakarta dengan mudah dan cepat.`,
-    images: "/og.png",
+    images: "https://www.jadwal-krl.com/og.png",
   },
 };
 
@@ -28,9 +32,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html
+      lang="en"
+      className={`${GeistSans.variable} ${GeistMono.variable}`}
+      suppressHydrationWarning
+    >
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TRPCReactProvider>
+          <MainProvider
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </MainProvider>
+        </TRPCReactProvider>
       </body>
       <Script
         defer
