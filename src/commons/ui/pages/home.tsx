@@ -9,8 +9,11 @@ import {
   ArrowDownAZ,
   ArrowUpDown,
   ArrowUpZA,
+  Check,
+  Dot,
   Minus,
   Moon,
+  Palette,
   Plus,
   Search,
   Sun,
@@ -330,19 +333,43 @@ const MainPage = () => {
             <div className="flex items-center gap-5">
               {isLoaded ? (
                 isAdding ? null : (
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setTheme(theme === "light" ? "dark" : "light")
-                    }
-                    className={cn("transition-all duration-200", {
-                      "visible text-foreground/50 hover:text-foreground":
-                        !isAdding,
-                      "invisible opacity-0": isAdding,
-                    })}
-                  >
-                    {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
-                  </button>
+                  <Dropdown.Root>
+                    <Dropdown.Trigger asChild>
+                      <button
+                        type="button"
+                        className={cn("transition-all duration-200", {
+                          "visible text-foreground/50 hover:text-foreground":
+                            !isAdding,
+                          "invisible opacity-0": isAdding,
+                        })}
+                      >
+                        <Palette size={20} className="shrink-0 " />
+                      </button>
+                    </Dropdown.Trigger>
+                    <Dropdown.Content side="bottom" align="end" sideOffset={10}>
+                      <Dropdown.CheckboxItem
+                        className="flex items-center justify-between"
+                        onClick={() => setTheme("light")}
+                        checked={theme === "light"}
+                      >
+                        Light
+                      </Dropdown.CheckboxItem>
+                      <Dropdown.CheckboxItem
+                        className="flex items-center justify-between"
+                        onClick={() => setTheme("dark")}
+                        checked={theme === "dark"}
+                      >
+                        Dark
+                      </Dropdown.CheckboxItem>
+                      <Dropdown.CheckboxItem
+                        className="flex items-center justify-between"
+                        onClick={() => setTheme("black")}
+                        checked={theme === "black"}
+                      >
+                        Black
+                      </Dropdown.CheckboxItem>
+                    </Dropdown.Content>
+                  </Dropdown.Root>
                 )
               ) : null}
 

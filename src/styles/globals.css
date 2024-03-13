@@ -29,6 +29,15 @@
   :root[data-theme="dark"] {
     --background: 0 0% 10%;
     --foreground: 0 0% 98%;
+  }
+
+  :root[data-theme="black"] {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+  }
+
+  :root[data-theme="black"],
+  :root[data-theme="dark"] {
     --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
