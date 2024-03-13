@@ -59,3 +59,8 @@ export function getRelativeTimeString(time: string): string {
 export function removeSeconds(time: string) {
   return time.split(":").slice(0, 2).join(":");
 }
+
+export function formatTime(time?: string) {
+  if (!time) return "";
+  return time.split(":").join(".");
+}

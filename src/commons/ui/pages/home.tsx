@@ -8,9 +8,11 @@ import {
   ArrowUpDown,
   ArrowUpZA,
   Minus,
+  Moon,
   Palette,
   Plus,
   Search,
+  Sun,
   X,
 } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -116,7 +118,11 @@ const MainPage = () => {
                           "invisible opacity-0": isAdding,
                         })}
                       >
-                        <Palette size={20} className="shrink-0 " />
+                        {theme === "light" ? (
+                          <Moon size={20} />
+                        ) : (
+                          <Sun size={20} />
+                        )}
                       </button>
                     </Dropdown.Trigger>
                     <Dropdown.Content side="bottom" align="end" sideOffset={10}>

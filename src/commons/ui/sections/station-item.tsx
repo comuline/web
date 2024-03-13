@@ -3,7 +3,11 @@
 import { type GroupedSchedule } from "@/commons/type";
 import * as Accordion from "@/commons/ui/components/accordion";
 import { cn } from "@/commons/utils/cn";
-import { getRelativeTimeString, removeSeconds } from "@/commons/utils/date";
+import {
+  formatTime,
+  getRelativeTimeString,
+  removeSeconds,
+} from "@/commons/utils/date";
 import { api } from "@/trpc/react";
 import { Loader, RefreshCcw } from "lucide-react";
 import { useEffect } from "react";
@@ -152,10 +156,10 @@ const StationItem = ({
                               ?.timeEstimated ? (
                               <div className="flex flex-col gap-1 text-right">
                                 <p className="font-mono text-lg font-medium tracking-tight">
-                                  {
+                                  {formatTime(
                                     groupedSchedule[lineKey]?.[destKey]?.[0]
-                                      ?.timeEstimated
-                                  }
+                                      ?.timeEstimated,
+                                  )}
                                 </p>
 
                                 <p className="text-xs opacity-30">
@@ -184,7 +188,7 @@ const StationItem = ({
                                       className="flex flex-col gap-0.5"
                                     >
                                       <p className="font-mono text-sm font-semibold">
-                                        {train.timeEstimated}
+                                        {formatTime(train.timeEstimated)}
                                       </p>
                                       <p className="text-xs opacity-30">
                                         {getRelativeTimeString(
@@ -229,8 +233,8 @@ const StationItem = ({
                                         key={train.id}
                                         className="flex rounded-md bg-foreground/10 px-2 py-1.5 text-sm"
                                       >
-                                        <span className="mx-auto text-center font-mono text-foreground/80">
-                                          {train.timeEstimated}
+                                        <span className="mx-auto text-center font-mono font-semibold text-foreground/80">
+                                          {formatTime(train.timeEstimated)}
                                         </span>
                                       </div>
                                     ))}
