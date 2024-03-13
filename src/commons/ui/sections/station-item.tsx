@@ -117,7 +117,7 @@ const StationItem = ({
             </div>
           ) : isFetched && data.length === 0 ? (
             <p className="text-sm opacity-50">
-              Tidak ada jadwal kereta lagi. Cek lagi pada esok hari.
+              Jadwal kereta api tidak tersedia. Cek lagi pada esok hari.
             </p>
           ) : (
             Object.keys(groupedSchedule).map((lineKey, id, arr) => (
