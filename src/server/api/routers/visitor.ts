@@ -1,8 +1,7 @@
-import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter } from "../trpc";
 
 export const visitorRoute = createTRPCRouter({
-  set: publicProcedure
+  /*   set: publicProcedure
     .input(z.enum(["add", "sub"]))
     .mutation(async ({ input, ctx }) => {
       if (input === "add") {
@@ -30,5 +29,5 @@ export const visitorRoute = createTRPCRouter({
     if (!count || Number(count) <= 0) return 0;
 
     return Number(count);
-  }),
+  }), */
 });
