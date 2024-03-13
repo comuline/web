@@ -9,14 +9,10 @@ import {
   ArrowDownAZ,
   ArrowUpDown,
   ArrowUpZA,
-  Check,
-  Dot,
   Minus,
-  Moon,
   Palette,
   Plus,
   Search,
-  Sun,
   X,
 } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -38,12 +34,18 @@ interface TrainData {
 
 type GroupedData = Record<string, Record<string, TrainData[]>>;
 
+const scheduleKey = (id: string) => `jadwal-krl-schedule-${id}`;
+
 const StationItem = ({
   station,
 }: {
   station: { id: string; name: string };
 }) => {
-  const { data, isLoading } = api.schedule.getByStationId.useQuery(station.id);
+  const { data, isLoading } = api.schedule.getByStationId.useQuery(station.id, {
+    initialData: JSON.parse(
+      localStorage.getItem(scheduleKey(station.id)) ?? "[]",
+    ),
+  });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const groupedData: GroupedData = data?.reduce((acc: any, obj) => {
@@ -65,6 +67,15 @@ const StationItem = ({
     });
     return acc;
   }, {});
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (data.length === 0) return;
+    const local = localStorage.getItem(scheduleKey(station.id));
+    if (JSON.stringify(local) !== JSON.stringify(data)) {
+      localStorage.setItem(scheduleKey(station.id), JSON.stringify(data));
+    }
+  }, [data, isLoading, station.id]);
 
   return (
     <Accordion.Root
@@ -241,7 +252,9 @@ const StationItem = ({
 };
 
 const MainPage = () => {
-  const station = api.station.getAll.useQuery();
+  const station = api.station.getAll.useQuery(undefined, {
+    initialData: JSON.parse(localStorage.getItem("jadwal-krl-station") ?? "[]"),
+  });
   /*   const { mutate: handleVisitor } = api.visitor.set.useMutation();
   const { data: visitorCount } = api.visitor.get.useQuery();
   const { data: totalVisitor } = api.visitor.getTotal.useQuery(); */
@@ -301,6 +314,14 @@ const MainPage = () => {
     setLoaded(true);
     return;
   }, []);
+
+  useEffect(() => {
+    if (station.data.length === 0) return;
+    const local = localStorage.getItem("jadwal-krl-station");
+    if (JSON.stringify(local) !== JSON.stringify(station.data)) {
+      localStorage.setItem("jadwal-krl-station", JSON.stringify(station.data));
+    }
+  }, [station.data]);
 
   /*   useEffect(() => {
     void handleVisitor("add");
