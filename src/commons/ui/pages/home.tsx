@@ -4,7 +4,8 @@ import * as Accordion from "@/commons/ui/components/accordion";
 import * as Dropdown from "@/commons/ui/components/dropdown";
 import { cn } from "@/commons/utils/cn";
 import { getRelativeTimeString, removeSeconds } from "@/commons/utils/date";
-import { api } from "@/trpc/react";
+import { type Schedule } from "@/server/api/routers/schedule";
+import { type Station } from "@/server/api/routers/station";
 import {
   ArrowDownAZ,
   ArrowUpDown,
@@ -19,6 +20,7 @@ import {
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 interface TrainData {
   id: string;
@@ -42,43 +44,62 @@ const StationItem = ({
 }: {
   station: { id: string; name: string };
 }) => {
-  const { data, isLoading, isFetching, isRefetching } =
+  const {
+    data: schedules,
+    isLoading,
+    isValidating,
+  } = useSWR<{
+    data: Schedule[];
+    status: number;
+  }>(`https://www.api.jadwal-krl.com/v1/${station.id}`, fetcher, {
+    fallbackData:
+      typeof window !== "undefined"
+        ? JSON.parse(localStorage.getItem(scheduleKey(station.id)) ?? "[]")
+        : [],
+  });
+
+  /*   const { data, isLoading, isFetching, isRefetching } =
     api.schedule.getByStationId.useQuery(station.id, {
       initialData:
         typeof window !== "undefined"
           ? JSON.parse(localStorage.getItem(scheduleKey(station.id)) ?? "[]")
           : [],
-    });
+    }); */
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const groupedData: GroupedData = data?.reduce((acc: any, obj) => {
-    const lineKey = `${obj.line}-${obj.color}`;
-    const destKey = obj.destination;
+  const groupedData: GroupedData = (schedules?.data ?? []).reduce(
+    (acc: any, obj) => {
+      const lineKey = `${obj.line}-${obj.color}`;
+      const destKey = obj.destination;
 
-    if (!acc[lineKey]) {
-      acc[lineKey] = {};
-    }
+      if (!acc[lineKey]) {
+        acc[lineKey] = {};
+      }
 
-    if (!acc[lineKey][destKey]) {
-      acc[lineKey][destKey] = [];
-    }
+      if (!acc[lineKey][destKey]) {
+        acc[lineKey][destKey] = [];
+      }
 
-    acc[lineKey][destKey].push({
-      ...obj,
-      timeEstimated: removeSeconds(obj.timeEstimated),
-      destinationTime: removeSeconds(obj.destinationTime),
-    });
-    return acc;
-  }, {});
+      acc[lineKey][destKey].push({
+        ...obj,
+        timeEstimated: removeSeconds(obj.timeEstimated),
+        destinationTime: removeSeconds(obj.destinationTime),
+      });
+      return acc;
+    },
+    {},
+  );
 
   useEffect(() => {
     if (isLoading) return;
+    if (!schedules?.data) return;
+    const { data } = schedules;
     if (data.length === 0) return;
     const local = localStorage.getItem(scheduleKey(station.id));
     if (JSON.stringify(local) !== JSON.stringify(data)) {
       localStorage.setItem(scheduleKey(station.id), JSON.stringify(data));
     }
-  }, [data, isLoading, station.id]);
+  }, [schedules, isLoading, station.id]);
 
   return (
     <Accordion.Root
@@ -94,7 +115,7 @@ const StationItem = ({
               <h1 className="text-2xl font-semibold capitalize">
                 {station.name.toLocaleLowerCase()}
               </h1>
-              {isFetching || isRefetching ? (
+              {isValidating ? (
                 <Loader size={16} className="animate-spin opacity-30" />
               ) : null}
             </div>
@@ -102,7 +123,7 @@ const StationItem = ({
         </Accordion.Trigger>
 
         <Accordion.Content>
-          {isLoading || (isLoading && data.length === 0) ? (
+          {isLoading || (isLoading && schedules?.data.length === 0) ? (
             <div className="flex animate-pulse flex-col gap-2">
               <div className="flex h-full w-full gap-3">
                 <div
@@ -259,13 +280,19 @@ const StationItem = ({
   );
 };
 
+const fetcher = (...args) => fetch(...args).then((res) => res.json());
+
 const MainPage = () => {
-  const station = api.station.getAll.useQuery(undefined, {
-    initialData:
+  const { data: stations } = useSWR<{
+    data: Station[];
+    status: number;
+  }>("https://www.api.jadwal-krl.com/v1/station", fetcher, {
+    fallbackData:
       typeof window !== "undefined"
         ? JSON.parse(localStorage.getItem("jadwal-krl-station") ?? "[]")
         : [],
   });
+
   /*   const { mutate: handleVisitor } = api.visitor.set.useMutation();
   const { data: visitorCount } = api.visitor.get.useQuery();
   const { data: totalVisitor } = api.visitor.getTotal.useQuery(); */
@@ -327,12 +354,13 @@ const MainPage = () => {
   }, []);
 
   useEffect(() => {
-    if (station.data.length === 0) return;
+    if (!stations) return;
+    if (!stations.data || stations.data.length === 0) return;
     const local = localStorage.getItem("jadwal-krl-station");
-    if (JSON.stringify(local) !== JSON.stringify(station.data)) {
-      localStorage.setItem("jadwal-krl-station", JSON.stringify(station.data));
+    if (JSON.stringify(local) !== JSON.stringify(stations.data)) {
+      localStorage.setItem("jadwal-krl-station", JSON.stringify(stations.data));
     }
-  }, [station.data]);
+  }, [stations]);
 
   /*   useEffect(() => {
     void handleVisitor("add");
@@ -527,12 +555,12 @@ const MainPage = () => {
           ) : null}
         </nav>
 
-        {isAdding ? (
+        {isAdding && stations ? (
           <section className="flex flex-col gap-1.5 px-[4px] pt-[10px]">
             {selected.length > 0 ? (
               <div className="mt-2 flex flex-col gap-1">
                 <h1 className="px-[8px] text-sm opacity-50">Tersimpan</h1>
-                {station.data
+                {stations.data
                   ?.filter((s) => {
                     return selected
                       .map(({ name }) => name.toLocaleLowerCase())
@@ -591,7 +619,7 @@ const MainPage = () => {
             <span className="h-[1px] w-full border-b px-[8px] py-2" />
             <div className="mt-2 flex flex-col gap-1">
               <h1 className="px-[8px] text-sm opacity-50">Belum Tersimpan</h1>
-              {(station.data ?? [])
+              {(stations.data ?? [])
                 ?.filter((s) =>
                   selected.length > 0
                     ? !selected
@@ -607,7 +635,7 @@ const MainPage = () => {
                   }
                   return true;
                 }).length > 0 ? (
-                station.data
+                stations.data
                   ?.filter((s) =>
                     selected.length > 0
                       ? !selected
