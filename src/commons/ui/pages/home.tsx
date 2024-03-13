@@ -102,7 +102,7 @@ const StationItem = ({
         </Accordion.Trigger>
 
         <Accordion.Content>
-          {isLoading ? (
+          {isLoading || (isLoading && data.length === 0) ? (
             <div className="flex animate-pulse flex-col gap-2">
               <div className="flex h-full w-full gap-3">
                 <div
