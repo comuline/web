@@ -42,9 +42,10 @@ const StationItem = ({
   station: { id: string; name: string };
 }) => {
   const { data, isLoading } = api.schedule.getByStationId.useQuery(station.id, {
-    initialData: localStorage
-      ? JSON.parse(localStorage.getItem(scheduleKey(station.id)) ?? "[]")
-      : [],
+    initialData:
+      typeof window !== "undefined"
+        ? JSON.parse(localStorage.getItem(scheduleKey(station.id)) ?? "[]")
+        : [],
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -87,6 +88,7 @@ const StationItem = ({
         <Accordion.Trigger className="items-center hover:no-underline">
           <div className="flex w-full flex-col gap-2 text-left">
             <p className="text-xs opacity-50">Stasiun</p>
+            <div className="flex items-center gap-2"></div>
             <h1 className="text-2xl font-semibold capitalize">
               {station.name.toLocaleLowerCase()}
             </h1>
@@ -253,9 +255,10 @@ const StationItem = ({
 
 const MainPage = () => {
   const station = api.station.getAll.useQuery(undefined, {
-    initialData: localStorage
-      ? JSON.parse(localStorage.getItem("jadwal-krl-station") ?? "[]")
-      : [],
+    initialData:
+      typeof window !== "undefined"
+        ? JSON.parse(localStorage.getItem("jadwal-krl-station") ?? "[]")
+        : [],
   });
   /*   const { mutate: handleVisitor } = api.visitor.set.useMutation();
   const { data: visitorCount } = api.visitor.get.useQuery();
