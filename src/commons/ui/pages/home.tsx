@@ -13,6 +13,7 @@ import {
   Minus,
   Palette,
   Plus,
+  RefreshCcw,
   Search,
   X,
 } from "lucide-react";
@@ -42,13 +43,20 @@ const StationItem = ({
 }: {
   station: { id: string; name: string };
 }) => {
-  const { data, isLoading, isFetching, isRefetching } =
-    api.schedule.getByStationId.useQuery(station.id, {
-      initialData:
-        typeof window !== "undefined"
-          ? JSON.parse(localStorage.getItem(scheduleKey(station.id)) ?? "[]")
-          : [],
-    });
+  const {
+    data,
+    isLoading,
+    isFetching,
+    isRefetching,
+    refetch,
+    isError,
+    isFetched,
+  } = api.schedule.getByStationId.useQuery(station.id, {
+    initialData:
+      typeof window !== "undefined"
+        ? JSON.parse(localStorage.getItem(scheduleKey(station.id)) ?? "[]")
+        : undefined,
+  });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const groupedData: GroupedData = data?.reduce((acc: any, obj) => {
@@ -90,19 +98,25 @@ const StationItem = ({
         <Accordion.Trigger className="items-center hover:no-underline">
           <div className="flex w-full flex-col gap-1 text-left">
             <p className="text-xs opacity-50">Stasiun</p>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <h1 className="text-2xl font-semibold capitalize">
                 {station.name.toLocaleLowerCase()}
               </h1>
               {isFetching || isRefetching ? (
-                <Loader size={16} className="animate-spin opacity-30" />
+                <Loader size={16} className="animate-spin opacity-50" />
+              ) : isError && isFetched ? (
+                <RefreshCcw
+                  size={16}
+                  onClick={() => refetch()}
+                  className="opacity-50"
+                />
               ) : null}
             </div>
           </div>
         </Accordion.Trigger>
 
         <Accordion.Content>
-          {isLoading ? (
+          {(data.length === 0 && (isFetching || isRefetching)) || isLoading ? (
             <div className="flex animate-pulse flex-col gap-2">
               <div className="flex h-full w-full gap-3">
                 <div
@@ -333,21 +347,6 @@ const MainPage = () => {
       localStorage.setItem("jadwal-krl-station", JSON.stringify(station.data));
     }
   }, [station.data]);
-
-  /*   useEffect(() => {
-    void handleVisitor("add");
-
-    window.addEventListener("beforeunload", () => {
-      void handleVisitor("sub");
-    });
-
-    return () => {
-      window.removeEventListener("beforeunload", () => {
-        void handleVisitor("sub");
-      });
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); */
 
   return (
     <main className="flex min-h-screen bg-background text-foreground">
