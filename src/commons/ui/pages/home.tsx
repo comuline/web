@@ -42,9 +42,9 @@ const StationItem = ({
   station: { id: string; name: string };
 }) => {
   const { data, isLoading } = api.schedule.getByStationId.useQuery(station.id, {
-    initialData: JSON.parse(
-      localStorage.getItem(scheduleKey(station.id)) ?? "[]",
-    ),
+    initialData: localStorage
+      ? JSON.parse(localStorage.getItem(scheduleKey(station.id)) ?? "[]")
+      : [],
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -253,7 +253,9 @@ const StationItem = ({
 
 const MainPage = () => {
   const station = api.station.getAll.useQuery(undefined, {
-    initialData: JSON.parse(localStorage.getItem("jadwal-krl-station") ?? "[]"),
+    initialData: localStorage
+      ? JSON.parse(localStorage.getItem("jadwal-krl-station") ?? "[]")
+      : [],
   });
   /*   const { mutate: handleVisitor } = api.visitor.set.useMutation();
   const { data: visitorCount } = api.visitor.get.useQuery();
