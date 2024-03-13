@@ -9,6 +9,7 @@ import {
   ArrowDownAZ,
   ArrowUpDown,
   ArrowUpZA,
+  Loader,
   Minus,
   Palette,
   Plus,
@@ -41,12 +42,13 @@ const StationItem = ({
 }: {
   station: { id: string; name: string };
 }) => {
-  const { data, isLoading } = api.schedule.getByStationId.useQuery(station.id, {
-    initialData:
-      typeof window !== "undefined"
-        ? JSON.parse(localStorage.getItem(scheduleKey(station.id)) ?? "[]")
-        : [],
-  });
+  const { data, isLoading, isFetching, isRefetching } =
+    api.schedule.getByStationId.useQuery(station.id, {
+      initialData:
+        typeof window !== "undefined"
+          ? JSON.parse(localStorage.getItem(scheduleKey(station.id)) ?? "[]")
+          : [],
+    });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const groupedData: GroupedData = data?.reduce((acc: any, obj) => {
@@ -86,12 +88,16 @@ const StationItem = ({
     >
       <Accordion.Item value={station.id}>
         <Accordion.Trigger className="items-center hover:no-underline">
-          <div className="flex w-full flex-col gap-2 text-left">
+          <div className="flex w-full flex-col gap-1 text-left">
             <p className="text-xs opacity-50">Stasiun</p>
-            <div className="flex items-center gap-2"></div>
-            <h1 className="text-2xl font-semibold capitalize">
-              {station.name.toLocaleLowerCase()}
-            </h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-semibold capitalize">
+                {station.name.toLocaleLowerCase()}
+              </h1>
+              {isFetching || isRefetching ? (
+                <Loader size={16} className="animate-spin opacity-30" />
+              ) : null}
+            </div>
           </div>
         </Accordion.Trigger>
 
