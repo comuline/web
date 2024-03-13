@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { env } from "@/env";
+import { type Schedule } from "@/commons/type";
 
 export const scheduleRouter = createTRPCRouter({
   getByStationId: publicProcedure
@@ -10,26 +11,19 @@ export const scheduleRouter = createTRPCRouter({
         throw new Error("Stasiun tidak ditemukan");
       }
 
-      const req = await fetch(
-        `${env.API_URL}/schedule/${input.toLocaleUpperCase()}?from_now=true`,
-      );
+      try {
+        const req = await fetch(
+          `${env.API_URL}/schedule/${input.toLocaleUpperCase()}?from_now=true`,
+        );
 
-      const data = (await req.json()) as {
-        status: number;
-        data: {
-          id: string;
-          stationId: string;
-          trainId: string;
-          line: string;
-          route: string;
-          color: string;
-          destination: string;
-          timeEstimated: string;
-          destinationTime: string;
-          updatedAt: string;
-        }[];
-      };
+        const data = (await req.json()) as {
+          status: number;
+          data: Schedule[];
+        };
 
-      return data.data ?? [];
+        return data.data ?? [];
+      } catch (e) {
+        throw e;
+      }
     }),
 });
