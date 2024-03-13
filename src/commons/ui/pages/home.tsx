@@ -66,8 +66,8 @@ const StationItem = ({
           : [],
     }); */
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const groupedData: GroupedData = (schedules?.data ?? []).reduce(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (acc: any, obj) => {
       const lineKey = `${obj.line}-${obj.color}`;
       const destKey = obj.destination;
@@ -280,7 +280,8 @@ const StationItem = ({
   );
 };
 
-const fetcher = (...args) => fetch(...args).then((res) => res.json());
+const fetcher = (...args: Parameters<typeof fetch>) =>
+  fetch(...args).then((res) => res.json());
 
 const MainPage = () => {
   const { data: stations } = useSWR<{
