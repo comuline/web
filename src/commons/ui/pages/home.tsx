@@ -707,7 +707,7 @@ const MainPage = () => {
           </section>
         )}
 
-        <div className="flex w-full flex-col gap-[10px] py-10 text-center text-sm">
+        <div className="flex w-full flex-col gap-[20px] py-10 text-center text-sm">
           {/*           <div className="mx-auto flex items-center gap-2">
             {!visitorCount || visitorCount === 0 ? null : (
               <div className="flex items-center gap-2">
@@ -748,6 +748,22 @@ const MainPage = () => {
               className="underline opacity-50 transition hover:opacity-100"
             >
               GitHub
+            </Link>
+            <p className="opacity-30">⋅</p>
+            <Link
+              target="_blank"
+              href="https://analytics.zulio.me/share/t1FN42zTmHDAdUiP/www.jadwal-krl.com"
+              className="underline opacity-50 transition hover:opacity-100"
+            >
+              Analytics
+            </Link>
+            <p className="opacity-30">⋅</p>
+            <Link
+              target="_blank"
+              href="https://www.nihbuatjajan.com/lio"
+              className="underline opacity-50 transition hover:opacity-100"
+            >
+              Donate
             </Link>
           </div>
         </div>
