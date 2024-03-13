@@ -115,6 +115,10 @@ const StationItem = ({
                 </div>
               </div>
             </div>
+          ) : isFetched && data.length === 0 ? (
+            <p className="text-sm opacity-50">
+              Tidak ada jadwal kereta lagi. Cek lagi pada esok hari.
+            </p>
           ) : (
             Object.keys(groupedSchedule).map((lineKey, id, arr) => (
               <div key={lineKey} className="flex flex-col gap-2">

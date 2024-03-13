@@ -9,7 +9,6 @@ import {
   ArrowUpZA,
   Minus,
   Moon,
-  Palette,
   Plus,
   Search,
   Sun,
