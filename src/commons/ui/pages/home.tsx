@@ -81,18 +81,20 @@ const StationItem = ({
             <div className="flex animate-pulse flex-col gap-2">
               <div className="flex h-full w-full gap-3">
                 <div
-                  className={cn("h-[50px] w-[5px] rounded-full bg-white/10")}
+                  className={cn(
+                    "h-[50px] w-[5px] rounded-full bg-foreground/10",
+                  )}
                 />
                 <div className={cn("flex w-full flex-col gap-2")}>
                   <div className="flex flex-col gap-1 pb-1 pt-0.5">
                     <div className="flex items-center justify-between gap-2 text-xs">
-                      <div className="h-[13px] w-[80px] rounded-md bg-white/10" />
-                      <div className="h-[13px] w-[50px] rounded-md bg-white/10" />
+                      <div className="h-[13px] w-[80px] rounded-md bg-foreground/10" />
+                      <div className="h-[13px] w-[50px] rounded-md bg-foreground/10" />
                     </div>
                     <div className="flex items-start justify-between gap-2 ">
-                      <div className="mt-1 h-[25px] w-[80px] rounded-md bg-white/10" />
+                      <div className="mt-1 h-[25px] w-[80px] rounded-md bg-foreground/10" />
 
-                      <div className="mt-1 h-[25px] w-[70px] rounded-md bg-white/10" />
+                      <div className="mt-1 h-[25px] w-[70px] rounded-md bg-foreground/10" />
                     </div>
                   </div>
                 </div>
@@ -206,9 +208,9 @@ const StationItem = ({
                                   .map((train) => (
                                     <div
                                       key={train.id}
-                                      className="flex rounded-md bg-white/10 px-2 py-1.5 text-sm"
+                                      className="flex rounded-md bg-foreground/10 px-2 py-1.5 text-sm"
                                     >
-                                      <span className="mx-auto text-center font-mono text-white/80">
+                                      <span className="mx-auto text-center font-mono text-foreground/80">
                                         {train.timeEstimated}
                                       </span>
                                     </div>
@@ -308,9 +310,9 @@ const MainPage = () => {
   }, []); */
 
   return (
-    <main className="flex min-h-screen bg-black text-white">
+    <main className="flex min-h-screen bg-background text-foreground">
       <section className="relative mx-auto flex w-full max-w-[500px] flex-col">
-        <nav className="sticky top-0 z-10 flex h-fit flex-col gap-2 bg-black px-[12px] pt-[20px]">
+        <nav className="sticky top-0 z-10 flex h-fit flex-col gap-2 bg-background px-[12px] pt-[20px]">
           <div
             className={cn("flex w-full items-center justify-between", {
               "pb-[10px]": !isAdding || !isSearching,
@@ -329,7 +331,8 @@ const MainPage = () => {
                     setSearch("");
                   }}
                   className={cn("transition-all duration-200", {
-                    "visible text-white/50 hover:text-white": !isAdding,
+                    "visible text-foreground/50 hover:text-foreground":
+                      !isAdding,
                     "invisible opacity-0": isAdding,
                   })}
                 >
@@ -350,7 +353,8 @@ const MainPage = () => {
                     <button
                       type="button"
                       className={cn("transition-all duration-200", {
-                        "visible text-white/50 hover:text-white": !isAdding,
+                        "visible text-foreground/50 hover:text-foreground":
+                          !isAdding,
                         "invisible opacity-0": isAdding,
                       })}
                     >
@@ -409,7 +413,8 @@ const MainPage = () => {
                   setSearch("");
                 }}
                 className={cn("transition-all", {
-                  "text-white/50 hover:text-white [&>svg]:rotate-45": isAdding,
+                  "text-foreground/50 hover:text-foreground [&>svg]:rotate-45":
+                    isAdding,
                   "[&>svg]:rotate-0": !isAdding,
                 })}
               >
@@ -426,7 +431,7 @@ const MainPage = () => {
               value={search}
               onChange={(e) => setSearch(e.currentTarget.value)}
               placeholder="Cari stasiun keberangkatan"
-              className="mb-3 w-full rounded-md border-[1px] border-white/20 bg-transparent p-2 text-white placeholder:text-white/30"
+              className="mb-3 w-full rounded-md border-[1px] border-foreground/20 bg-transparent p-2 text-foreground placeholder:text-foreground/30"
             />
           ) : isSearching ? (
             <input
@@ -434,7 +439,7 @@ const MainPage = () => {
               value={search}
               onChange={(e) => setSearch(e.currentTarget.value)}
               placeholder="Cari stasiun keberangkatan"
-              className="mb-3 w-full rounded-md border-[1px] border-white/20 bg-transparent p-2 text-white placeholder:text-white/30"
+              className="mb-3 w-full rounded-md border-[1px] border-foreground/20 bg-transparent p-2 text-foreground placeholder:text-foreground/30"
             />
           ) : null}
         </nav>
@@ -455,7 +460,7 @@ const MainPage = () => {
                     <button
                       type="button"
                       key={s.id}
-                      className="group flex items-center rounded-md px-[8px] py-[4px] text-left capitalize transition-all hover:bg-white/10"
+                      className="group flex items-center rounded-md px-[8px] py-[4px] text-left capitalize transition-all hover:bg-foreground/10"
                       disabled={selected.length === 1}
                       onClick={() => {
                         if (
@@ -540,7 +545,7 @@ const MainPage = () => {
                     <button
                       type="button"
                       key={s.id}
-                      className="flex items-center rounded-md px-[8px] py-[4px] text-left capitalize transition-all hover:bg-white/10"
+                      className="flex items-center rounded-md px-[8px] py-[4px] text-left capitalize transition-all hover:bg-foreground/10"
                       onClick={() => {
                         if (
                           selected
@@ -582,12 +587,12 @@ const MainPage = () => {
             {isLoaded || selected.length === 0 ? (
               <div className="mt-5 flex flex-col gap-5">
                 <div className="flex w-full flex-col gap-2 pr-1 pt-2 text-left">
-                  <div className="h-[13px] w-[80px] rounded-md bg-white/10" />
-                  <div className="h-[30px] w-[120px] rounded-md bg-white/10" />
+                  <div className="h-[13px] w-[80px] rounded-md bg-foreground/10" />
+                  <div className="h-[30px] w-[120px] rounded-md bg-foreground/10" />
                 </div>
                 <div className="flex w-full flex-col gap-2 pr-1 pt-2 text-left">
-                  <div className="h-[13px] w-[80px] rounded-md bg-white/10" />
-                  <div className="h-[30px] w-[120px] rounded-md bg-white/10" />
+                  <div className="h-[13px] w-[80px] rounded-md bg-foreground/10" />
+                  <div className="h-[30px] w-[120px] rounded-md bg-foreground/10" />
                 </div>
               </div>
             ) : selected.length > 0 ? (
@@ -641,7 +646,7 @@ const MainPage = () => {
             <button
               type="button"
               onClick={() => setAdding(true)}
-              className="my-2 flex rounded-md border-[1px] border-white/10 bg-white/5 py-2.5 text-center text-sm text-white/80 transition hover:border-white/20  hover:text-white"
+              className="my-2 flex rounded-md border-[1px] border-foreground/10 bg-foreground/5 py-2.5 text-center text-sm text-foreground/80 transition hover:border-foreground/20  hover:text-foreground"
             >
               <div className="mx-auto flex items-center gap-2">
                 <Plus size={16} className="opacity-50" />
