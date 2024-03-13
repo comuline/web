@@ -10,6 +10,14 @@ const Footer = () => (
     <div className="mx-auto flex  items-center gap-[10px]">
       <Link
         target="_blank"
+        href="https://status.jadwal-krl.com/"
+        className="underline opacity-50 transition hover:opacity-100"
+      >
+        Status
+      </Link>
+      <p className="opacity-30">⋅</p>
+      <Link
+        target="_blank"
         href="https://www.api.jadwal-krl.com/docs"
         className="underline opacity-50 transition hover:opacity-100"
       >
