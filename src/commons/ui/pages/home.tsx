@@ -329,13 +329,21 @@ const MainPage = () => {
 
             <div className="flex items-center gap-5">
               {isLoaded ? (
-                <button
-                  type="button"
-                  onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-                  className="opacity-50"
-                >
-                  {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
-                </button>
+                isAdding ? null : (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setTheme(theme === "light" ? "dark" : "light")
+                    }
+                    className={cn("transition-all duration-200", {
+                      "visible text-foreground/50 hover:text-foreground":
+                        !isAdding,
+                      "invisible opacity-0": isAdding,
+                    })}
+                  >
+                    {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
+                  </button>
+                )
               ) : null}
 
               {isAdding ? null : (
