@@ -56,7 +56,13 @@ To get a local copy up and running, please follow these simple steps.
    npm i
    ```
 
-4. Run the app locally
+4. Copy the `.env.example` to `.env`
+
+   ```sh
+   cp .env.example .env
+   ```
+
+5. Run the app locally
 
    ```sh
    npm run dev
