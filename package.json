@@ -25,6 +25,7 @@
     "geist": "^1.2.2",
     "lucide-react": "^0.350.0",
     "next": "^14.1.0",
+    "next-pwa": "^5.6.0",
     "next-themes": "^0.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -36,6 +37,7 @@
   },
   "devDependencies": {
     "@types/eslint": "^8.56.2",
+    "@types/next-pwa": "^5.6.9",
     "@types/node": "^20.11.20",
     "@types/react": "^18.2.57",
     "@types/react-dom": "^18.2.19",
