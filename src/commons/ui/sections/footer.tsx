@@ -34,7 +34,7 @@ const Footer = () => (
       <p className="opacity-30">⋅</p>
       <Link
         target="_blank"
-        href="https://analytics.zulio.me/share/t1FN42zTmHDAdUiP/www.jadwal-krl.com"
+        href="https://analytics.zulio.me/share/t1FN42zTmHDAdUiP/www.comuline.com"
         className="underline opacity-50 transition hover:opacity-100"
       >
         Analytics
