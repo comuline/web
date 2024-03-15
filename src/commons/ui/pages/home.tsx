@@ -553,7 +553,6 @@ const MainPage = () => {
             onClick={(e) => {
               flushSync(() => {
                 addStationButtonRef.current = e.currentTarget;
-                console.log(addStationButtonRef.current);
                 setAdding(true);
               });
 
