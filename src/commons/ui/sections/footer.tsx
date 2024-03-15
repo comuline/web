@@ -10,7 +10,7 @@ const Footer = () => (
     <div className="mx-auto flex  items-center gap-[10px]">
       <Link
         target="_blank"
-        href="https://status.jadwal-krl.com/"
+        href="https://status.comuline.com/"
         className="underline opacity-50 transition hover:opacity-100"
       >
         Status
@@ -18,7 +18,7 @@ const Footer = () => (
       <p className="opacity-30">⋅</p>
       <Link
         target="_blank"
-        href="https://www.api.jadwal-krl.com/docs"
+        href="https://www.api.comuline.com/docs"
         className="underline opacity-50 transition hover:opacity-100"
       >
         API
@@ -26,7 +26,7 @@ const Footer = () => (
       <p className="opacity-30">⋅</p>
       <Link
         target="_blank"
-        href="https://github.com/abielzulio/jadwal-krl"
+        href="https://github.com/comuline"
         className="underline opacity-50 transition hover:opacity-100"
       >
         GitHub
@@ -38,14 +38,6 @@ const Footer = () => (
         className="underline opacity-50 transition hover:opacity-100"
       >
         Analytics
-      </Link>
-      <p className="opacity-30">⋅</p>
-      <Link
-        target="_blank"
-        href="https://www.nihbuatjajan.com/lio"
-        className="underline opacity-50 transition hover:opacity-100"
-      >
-        Donate
       </Link>
     </div>
   </div>

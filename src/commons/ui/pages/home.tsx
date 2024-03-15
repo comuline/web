@@ -94,15 +94,28 @@ const MainPage = () => {
   return (
     <main className="flex min-h-screen bg-background text-foreground">
       <section className="relative mx-auto flex w-full max-w-[500px] flex-col">
-        <nav className="sticky top-0 z-10 flex h-fit flex-col gap-2 bg-background px-[12px] pt-[20px]">
+        <nav className="sticky top-0 z-10 flex h-fit flex-col gap-2 bg-background pl-[8px] pr-[12px] pt-[20px]">
           <div
             className={cn("flex w-full items-center justify-between", {
               "pb-[10px]": !isAdding || !isSearching,
             })}
           >
-            <h1 className="font-mono text-lg tracking-tight opacity-30">
-              jadwal-krl.com
-            </h1>
+            <div className="flex items-center gap-1 opacity-30 transition-opacity hover:opacity-100">
+              <svg
+                width="25"
+                height="25"
+                viewBox="0 0 250 250"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M91.7793 124.5L122.366 62H200M91.7793 124.5L75.4906 157.784H50M91.7793 124.5L122.366 187H200M91.7793 124.5L75.4906 91.2157H50"
+                  stroke="currentColor"
+                  stroke-width="20"
+                />
+              </svg>
+              <h1 className="font-mono text-lg tracking-tight">Comuline</h1>
+            </div>
 
             <div className="flex items-center gap-5">
               {isLoaded ? (

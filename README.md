@@ -1,6 +1,6 @@
-<a href="https://www.jadwal-krl.com">
-  <img alt="Jadwal KRL — Simple & beautiful KRL commuter line schedule app" src="https://www.jadwal-krl.com/og.png">
-  <h1 align="center">jadwal-krl.com</h1>
+<a href="https://www.comuline.com">
+  <img alt="Comuline — Simple & beautiful KRL commuter line schedule app" src="https://www.comuline.com/og.png">
+  <h1 align="center">Comuline</h1>
 </a>
 
 <p align="center">
@@ -27,10 +27,10 @@
 
 ## Introduction
 
-[jadwal-krl.com](https://www.jadwal-krl.com) is a dead-ass simple & beautiful Indonesian public train commuter line app, featuring search and save station locally and get real-time schedule from our [own public API replication](https://github.com/abielzulio/jadwal-krl-api). [jadwal-krl.com](https://www.jadwal-krl.com) built with Next.js and deployed to Vercel.
+[Comuline](https://www.comuline.com) is a dead-ass simple & beautiful Indonesian public train commuter line app, featuring search and save station locally and get real-time schedule from our [own public API replication](https://github.com/comuline/api). [Comuline](https://www.comuline.com) built with Next.js and deployed to Vercel.
 
-[jadwal-krl.com](https://www.jadwal-krl.com) made as a public act of our belief that public transportation data should be publicly accessible.
-For PT. Kereta Commuter Indonesia or PT. KAI, if you read this, I'm willing to join your team to build the best public transportation data infrastructure ever for our own good sake.
+[Comuline](https://www.comuline.com) made as a public act of our belief that public transportation data should be publicly accessible.
+To any stakeholder that responsible with the data that we're consumed, if you read this, [I'm](https://www.linkedin.com/in/abielzulio/) willing to join your team to build the best public transportation data infrastructure ever for our own good sake.
 
 ## Development
 
@@ -41,13 +41,13 @@ To get a local copy up and running, please follow these simple steps.
 1. Clone the repo
 
    ```sh
-   git clone https://github.com/abielzulio/jadwal-krl.git
+   git clone https://github.com/comuline/web.git
    ```
 
 2. Go to the project folder
 
    ```sh
-   cd jadwal-krl
+   cd web
    ```
 
 3. Install packages
@@ -72,12 +72,8 @@ To get a local copy up and running, please follow these simple steps.
 
 Here's how you can contribute:
 
-- [Open an issue](https://github.com/abielzulio/jadwal-krl/issues) if you believe you've encountered a bug.
-- Make a [pull request](https://github.com/abielzulio/jadwal-krl/pull) to add new features/make quality-of-life improvements/fix bugs.
-
-## Author
-
-- Abiel Zulio M ([@abielzulio](https://twitter.com/abielzulio))
+- [Open an issue](https://github.com/comuline/web/issues) if you believe you've encountered a bug.
+- Make a [pull request](https://github.com/comuline/web/pull) to add new features/make quality-of-life improvements/fix bugs.
 
 ## License
 

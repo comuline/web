@@ -1,6 +1,11 @@
 {
-  "name": "jkrl-fe",
-  "version": "0.1.0",
+  "name": "@comuline/web",
+  "author": {
+    "name": "Comuline",
+    "url": "https://github.com/comuline",
+    "email": "support@comuline.com"
+  },
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
