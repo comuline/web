@@ -548,6 +548,8 @@ const MainPage = () => {
           ) : null}
           <button
             type="button"
+            aria-expanded={isAdding}
+            aria-controls="add-station-input"
             onClick={(e) => {
               flushSync(() => {
                 addStationButtonRef.current = e.currentTarget;
