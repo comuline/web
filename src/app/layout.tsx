@@ -12,6 +12,7 @@ import { MainProvider } from "@/commons/provider";
 export const metadata: Metadata = {
   title: `Jadwal KRL — Cari & Simpan Jadwal KRL ${new Date().getFullYear()}`,
   description: `Platform website untuk mencari, menyimpan, dan memantau jadwal KRL Jakarta dan Yogyakarta dengan mudah dan cepat.`,
+  manifest: "/manifest.json",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
   metadataBase:
     env.NODE_ENV === "production"
