@@ -310,6 +310,7 @@ const MainPage = () => {
             />
             <span
               aria-hidden
+              hidden={search !== ""}
               className="pointer-events-none absolute left-0 p-2 leading-relaxed text-foreground/30"
             >
               Cari stasiun keberangkatan
@@ -336,6 +337,7 @@ const MainPage = () => {
             />
             <span
               aria-hidden
+              hidden={search !== ""}
               className="pointer-events-none absolute left-0 p-2 leading-relaxed text-foreground/30"
             >
               Cari stasiun keberangkatan
