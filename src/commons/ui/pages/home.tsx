@@ -111,7 +111,7 @@ const MainPage = () => {
                 <path
                   d="M91.7793 124.5L122.366 62H200M91.7793 124.5L75.4906 157.784H50M91.7793 124.5L122.366 187H200M91.7793 124.5L75.4906 91.2157H50"
                   stroke="currentColor"
-                  stroke-width="20"
+                  strokeWidth="20"
                 />
               </svg>
               <h1 className="font-mono text-lg tracking-tight">Comuline</h1>

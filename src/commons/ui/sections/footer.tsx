@@ -10,6 +10,14 @@ const Footer = () => (
     <div className="mx-auto flex  items-center gap-[10px]">
       <Link
         target="_blank"
+        href="https://comuline.featurebase.app/"
+        className="underline opacity-50 transition hover:opacity-100"
+      >
+        Feedback
+      </Link>
+      <p className="opacity-30">⋅</p>
+      <Link
+        target="_blank"
         href="https://status.comuline.com/"
         className="underline opacity-50 transition hover:opacity-100"
       >
