@@ -15,7 +15,8 @@ import {
   X,
 } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import Footer from "../sections/footer";
 import StationItem from "../sections/station-item";
 
@@ -41,6 +42,10 @@ const MainPage = () => {
     by: "name" | "date";
     order: "asc" | "desc";
   } | null>(null);
+  const addStationInputRef = useRef<HTMLInputElement>(null);
+  const addStationButtonRef = useRef<HTMLButtonElement | null>(null);
+  const searchStationInputRef = useRef<HTMLInputElement>(null);
+  const searchStationButtonRef = useRef<HTMLButtonElement>(null);
 
   const { setTheme, theme } = useTheme();
 
@@ -124,6 +129,7 @@ const MainPage = () => {
                     <Dropdown.Trigger asChild>
                       <button
                         type="button"
+                        aria-label="Ganti tema"
                         className={cn("transition-all duration-200", {
                           "visible text-foreground/50 hover:text-foreground":
                             !isAdding,
@@ -164,36 +170,49 @@ const MainPage = () => {
                 )
               ) : null}
 
-              {isAdding ? null : (
-                <button
-                  type="button"
-                  onClick={() => {
+              <button
+                ref={searchStationButtonRef}
+                type="button"
+                aria-label={
+                  isSearching
+                    ? "Tutup input pencarian stasiun keberangkatan"
+                    : "Buka input pencarian stasiun keberangkatan"
+                }
+                aria-expanded={isSearching}
+                aria-controls="search-station-input"
+                hidden={isAdding}
+                onClick={() => {
+                  flushSync(() => {
                     setSearching((prev) => !prev);
                     setAdding(false);
                     setSearch("");
-                  }}
-                  className={cn("transition-all duration-200", {
-                    "visible text-foreground/50 hover:text-foreground":
-                      !isAdding,
-                    "invisible opacity-0": isAdding,
-                  })}
-                >
-                  {isSearching ? (
-                    <X size={20} />
-                  ) : (
-                    <Search
-                      size={20}
-                      className="shrink-0 transition-transform duration-200"
-                    />
-                  )}
-                </button>
-              )}
+                  });
+
+                  if (!isSearching) {
+                    searchStationInputRef.current?.focus();
+                  }
+                }}
+                className={cn("transition-all duration-200", {
+                  "visible text-foreground/50 hover:text-foreground": !isAdding,
+                  "invisible opacity-0": isAdding,
+                })}
+              >
+                {isSearching ? (
+                  <X size={20} />
+                ) : (
+                  <Search
+                    size={20}
+                    className="shrink-0 transition-transform duration-200"
+                  />
+                )}
+              </button>
 
               {sort ? (
                 <Dropdown.Root>
                   <Dropdown.Trigger asChild>
                     <button
                       type="button"
+                      aria-label="Urutkan stasiun keberangkatan"
                       className={cn("transition-all duration-200", {
                         "visible text-foreground/50 hover:text-foreground":
                           !isAdding,
@@ -249,10 +268,24 @@ const MainPage = () => {
               ) : null}
               <button
                 type="button"
-                onClick={() => {
-                  setAdding((prev) => !prev);
-                  setSearching(false);
-                  setSearch("");
+                aria-label={
+                  isAdding
+                    ? "Tutup input penambah stasiun keberangkatan"
+                    : "Buka input penambah stasiun keberangkatan"
+                }
+                aria-controls="add-station-input"
+                onClick={(e) => {
+                  flushSync(() => {
+                    addStationButtonRef.current = e.currentTarget;
+
+                    setAdding((prev) => !prev);
+                    setSearching(false);
+                    setSearch("");
+                  });
+
+                  if (!isAdding) {
+                    addStationInputRef.current?.focus();
+                  }
                 }}
                 className={cn("transition-all", {
                   "text-foreground/50 hover:text-foreground [&>svg]:rotate-45":
@@ -267,87 +300,131 @@ const MainPage = () => {
               </button>
             </div>
           </div>
-          {isAdding ? (
+          <div hidden={!isAdding} className="relative">
             <input
+              ref={addStationInputRef}
               type="text"
+              id="add-station-input"
+              aria-label="Cari stasiun keberangkatan untuk ditambahkan ke halaman depan"
               value={search}
               onChange={(e) => setSearch(e.currentTarget.value)}
-              placeholder="Cari stasiun keberangkatan"
-              className="mb-3 w-full rounded-md border-[1px] border-foreground/20 bg-transparent p-2 text-foreground placeholder:text-foreground/30"
+              onKeyDown={(e) => {
+                if (e.key === "Escape") {
+                  flushSync(() => {
+                    setAdding(false);
+                    setSearching(false);
+                    setSearch("");
+                  });
+
+                  addStationButtonRef.current?.focus();
+                }
+              }}
+              className="mb-3 w-full rounded-md border-[1px] border-foreground/20 bg-transparent p-2 text-foreground"
             />
-          ) : isSearching ? (
+            <span
+              aria-hidden
+              hidden={search !== ""}
+              className="pointer-events-none absolute left-0 p-2 leading-relaxed text-foreground/30"
+            >
+              Cari stasiun keberangkatan
+            </span>
+          </div>
+          <div hidden={!isSearching} className="relative">
             <input
+              ref={searchStationInputRef}
               type="text"
+              id="search-station-input"
+              aria-label="Cari stasiun keberangkatan"
               value={search}
               onChange={(e) => setSearch(e.currentTarget.value)}
-              placeholder="Cari stasiun keberangkatan"
-              className="mb-3 w-full rounded-md border-[1px] border-foreground/20 bg-transparent p-2 text-foreground placeholder:text-foreground/30"
+              onKeyDown={(e) => {
+                if (e.key === "Escape") {
+                  flushSync(() => {
+                    setSearching(false);
+                    setSearch("");
+                  });
+                  searchStationButtonRef.current?.focus();
+                }
+              }}
+              className="mb-3 w-full rounded-md border-[1px] border-foreground/20 bg-transparent p-2 text-foreground"
             />
-          ) : null}
+            <span
+              aria-hidden
+              hidden={search !== ""}
+              className="pointer-events-none absolute left-0 p-2 leading-relaxed text-foreground/30"
+            >
+              Cari stasiun keberangkatan
+            </span>
+          </div>
         </nav>
 
-        {isAdding ? (
-          <section className="flex flex-col gap-1.5 px-[4px] pt-[10px]">
-            {selected.length > 0 ? (
-              <div className="mt-2 flex flex-col gap-1">
-                <h1 className="px-[8px] text-sm opacity-50">Tersimpan</h1>
-                {station.data
-                  ?.filter((s) => {
-                    return selected
+        <section
+          hidden={!isAdding}
+          className={cn(
+            "flex-col gap-1.5 px-[4px] pt-[10px]",
+            isAdding && "flex",
+          )}
+        >
+          {selected.length > 0 ? (
+            <div className="mt-2 flex flex-col gap-1">
+              <h1 className="px-[8px] text-sm opacity-50">Tersimpan</h1>
+              {station.data
+                ?.filter((s) => {
+                  return selected
+                    .map(({ name }) => name.toLocaleLowerCase())
+                    .includes(s.name.toLocaleLowerCase());
+                })
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((s) => (
+                  <button
+                    type="button"
+                    key={s.id}
+                    className="group flex items-center rounded-md px-[8px] py-[4px] text-left capitalize transition-all hover:bg-foreground/10"
+                    disabled={selected.length === 1}
+                    onClick={() => {
+                      if (
+                        selected
+                          .map(({ name }) => name.toLocaleLowerCase())
+                          .includes(s.name.toLocaleLowerCase())
+                      ) {
+                        setSelected((prev) =>
+                          prev.filter(
+                            (item) =>
+                              item.name.toLocaleLowerCase() !==
+                                s.name.toLocaleLowerCase() && item.id !== s.id,
+                          ),
+                        );
+                      } else {
+                        setSelected((prev) => [
+                          ...prev,
+                          {
+                            id: s.id,
+                            name: s.name,
+                            savedAt: new Date().toISOString(),
+                          },
+                        ]);
+                      }
+                    }}
+                  >
+                    {s.name.toLocaleLowerCase()}
+                    {selected
                       .map(({ name }) => name.toLocaleLowerCase())
-                      .includes(s.name.toLocaleLowerCase());
-                  })
-                  .sort((a, b) => a.name.localeCompare(b.name))
-                  .map((s) => (
-                    <button
-                      type="button"
-                      key={s.id}
-                      className="group flex items-center rounded-md px-[8px] py-[4px] text-left capitalize transition-all hover:bg-foreground/10"
-                      disabled={selected.length === 1}
-                      onClick={() => {
-                        if (
-                          selected
-                            .map(({ name }) => name.toLocaleLowerCase())
-                            .includes(s.name.toLocaleLowerCase())
-                        ) {
-                          setSelected((prev) =>
-                            prev.filter(
-                              (item) =>
-                                item.name.toLocaleLowerCase() !==
-                                  s.name.toLocaleLowerCase() &&
-                                item.id !== s.id,
-                            ),
-                          );
-                        } else {
-                          setSelected((prev) => [
-                            ...prev,
-                            {
-                              id: s.id,
-                              name: s.name,
-                              savedAt: new Date().toISOString(),
-                            },
-                          ]);
-                        }
-                      }}
-                    >
-                      {s.name.toLocaleLowerCase()}
-                      {selected
-                        .map(({ name }) => name.toLocaleLowerCase())
-                        .includes(s.name.toLocaleLowerCase()) ? (
-                        selected.length === 1 ? null : (
-                          <X
-                            size={16}
-                            className={cn(
-                              "ml-auto opacity-50 transition group-hover:opacity-100",
-                            )}
-                          />
-                        )
-                      ) : null}
-                    </button>
-                  ))}
-              </div>
-            ) : null}
-            <span className="h-[1px] w-full border-b px-[8px] py-2" />
+                      .includes(s.name.toLocaleLowerCase()) ? (
+                      selected.length === 1 ? null : (
+                        <X
+                          size={16}
+                          className={cn(
+                            "ml-auto opacity-50 transition group-hover:opacity-100",
+                          )}
+                        />
+                      )
+                    ) : null}
+                  </button>
+                ))}
+            </div>
+          ) : null}
+          <span className="h-[1px] w-full border-b px-[8px] py-2" />
+          {isAdding && (
             <div className="mt-2 flex flex-col gap-1">
               <h1 className="px-[8px] text-sm opacity-50">Belum Tersimpan</h1>
               {(station.data ?? [])
@@ -423,80 +500,90 @@ const MainPage = () => {
                 </p>
               )}
             </div>
-          </section>
-        ) : (
-          <section className="flex flex-col gap-1.5 px-[12px]">
-            {!isLoaded || selected.length === 0 ? (
-              <div className="mt-5 flex flex-col gap-5">
-                <div className="flex w-full flex-col gap-2 pr-1 pt-2 text-left">
-                  <div className="h-[13px] w-[80px] rounded-md bg-foreground/10" />
-                  <div className="h-[30px] w-[120px] rounded-md bg-foreground/10" />
-                </div>
-                <div className="flex w-full flex-col gap-2 pr-1 pt-2 text-left">
-                  <div className="h-[13px] w-[80px] rounded-md bg-foreground/10" />
-                  <div className="h-[30px] w-[120px] rounded-md bg-foreground/10" />
-                </div>
-              </div>
-            ) : selected.length > 0 ? (
-              <div className="flex flex-col gap-1">
-                {selected
-                  .sort((a, b) => {
-                    if (!sort) return 0;
-                    const aName = a.name.toLocaleLowerCase();
-                    const bName = b.name.toLocaleLowerCase();
+          )}
+        </section>
 
-                    switch (sort.by) {
-                      case "name":
-                        if (sort.order === "asc") {
-                          return aName.localeCompare(bName);
-                        }
-                        return bName.localeCompare(aName);
-                      case "date":
-                        if (sort.order === "asc") {
-                          return (
-                            new Date(a.savedAt).getTime() -
-                            new Date(b.savedAt).getTime()
-                          );
-                        }
+        <section
+          hidden={isAdding}
+          className={cn("flex-col gap-1.5 px-[12px]", !isAdding && "flex")}
+        >
+          {!isLoaded || selected.length === 0 ? (
+            <div className="mt-5 flex flex-col gap-5">
+              <div className="flex w-full flex-col gap-2 pr-1 pt-2 text-left">
+                <div className="h-[13px] w-[80px] rounded-md bg-foreground/10" />
+                <div className="h-[30px] w-[120px] rounded-md bg-foreground/10" />
+              </div>
+              <div className="flex w-full flex-col gap-2 pr-1 pt-2 text-left">
+                <div className="h-[13px] w-[80px] rounded-md bg-foreground/10" />
+                <div className="h-[30px] w-[120px] rounded-md bg-foreground/10" />
+              </div>
+            </div>
+          ) : selected.length > 0 ? (
+            <div className="flex flex-col gap-1">
+              {selected
+                .sort((a, b) => {
+                  if (!sort) return 0;
+                  const aName = a.name.toLocaleLowerCase();
+                  const bName = b.name.toLocaleLowerCase();
+
+                  switch (sort.by) {
+                    case "name":
+                      if (sort.order === "asc") {
+                        return aName.localeCompare(bName);
+                      }
+                      return bName.localeCompare(aName);
+                    case "date":
+                      if (sort.order === "asc") {
                         return (
-                          new Date(b.savedAt).getTime() -
-                          new Date(a.savedAt).getTime()
+                          new Date(a.savedAt).getTime() -
+                          new Date(b.savedAt).getTime()
                         );
-                      default:
-                        return 0;
-                    }
-                  })
-                  .filter((s) => {
-                    if (search.length > 0) {
-                      return s.name
-                        .toLocaleLowerCase()
-                        .includes(search.toLocaleLowerCase());
-                    }
-                    return true;
-                  })
-                  .map((s) => (
-                    <StationItem
-                      key={s.id}
-                      station={{
-                        id: s.id,
-                        name: s.name,
-                      }}
-                    />
-                  ))}
-              </div>
-            ) : null}
-            <button
-              type="button"
-              onClick={() => setAdding(true)}
-              className="my-2 flex rounded-md border-[1px] border-foreground/10 bg-foreground/5 py-2.5 text-center text-sm text-foreground/80 transition hover:border-foreground/20  hover:text-foreground"
-            >
-              <div className="mx-auto flex items-center gap-2">
-                <Plus size={16} className="opacity-50" />
-                <span>Tambah stasiun lain</span>
-              </div>
-            </button>
-          </section>
-        )}
+                      }
+                      return (
+                        new Date(b.savedAt).getTime() -
+                        new Date(a.savedAt).getTime()
+                      );
+                    default:
+                      return 0;
+                  }
+                })
+                .filter((s) => {
+                  if (search.length > 0) {
+                    return s.name
+                      .toLocaleLowerCase()
+                      .includes(search.toLocaleLowerCase());
+                  }
+                  return true;
+                })
+                .map((s) => (
+                  <StationItem
+                    key={s.id}
+                    station={{
+                      id: s.id,
+                      name: s.name,
+                    }}
+                  />
+                ))}
+            </div>
+          ) : null}
+          <button
+            type="button"
+            aria-expanded={isAdding}
+            aria-controls="add-station-input"
+            onClick={(e) => {
+              flushSync(() => {
+                addStationButtonRef.current = e.currentTarget;
+                setAdding(true);
+              });
+
+              addStationInputRef.current?.focus();
+            }}
+            className="my-2 flex items-center justify-center gap-2 rounded-md border-[1px] border-foreground/10 bg-foreground/5 py-2.5 text-center text-sm text-foreground/80 transition hover:border-foreground/20  hover:text-foreground"
+          >
+            <Plus size={16} className="opacity-50" />
+            <span>Tambah stasiun lain</span>
+          </button>
+        </section>
 
         <Footer />
       </section>
