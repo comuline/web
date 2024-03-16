@@ -1,6 +1,6 @@
 "use client";
 
-import type { Schedule, GroupedSchedule } from "@/commons/type";
+import type { GroupedSchedule } from "@/commons/type";
 import * as Accordion from "@/commons/ui/components/accordion";
 import { cn } from "@/commons/utils/cn";
 import {
@@ -35,7 +35,7 @@ const StationItem = ({
   });
 
   const groupedSchedule: GroupedSchedule = data?.reduce(
-    (acc: Record<string, Record<string, Schedule[]>>, obj) => {
+    (acc: GroupedSchedule, obj) => {
       const lineKey = `${obj.line}-${obj.color}`;
       const destKey = obj.destination;
 
