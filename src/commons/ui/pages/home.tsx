@@ -310,6 +310,7 @@ const MainPage = () => {
             />
             <span
               aria-hidden
+              hidden={search !== ""}
               className="pointer-events-none absolute left-0 p-2 leading-relaxed text-foreground/30"
             >
               Cari stasiun keberangkatan
@@ -336,6 +337,7 @@ const MainPage = () => {
             />
             <span
               aria-hidden
+              hidden={search !== ""}
               className="pointer-events-none absolute left-0 p-2 leading-relaxed text-foreground/30"
             >
               Cari stasiun keberangkatan
@@ -409,25 +411,10 @@ const MainPage = () => {
             </div>
           ) : null}
           <span className="h-[1px] w-full border-b px-[8px] py-2" />
-          <div className="mt-2 flex flex-col gap-1">
-            <h1 className="px-[8px] text-sm opacity-50">Belum Tersimpan</h1>
-            {(station.data ?? [])
-              ?.filter((s) =>
-                selected.length > 0
-                  ? !selected
-                      .map(({ name }) => name.toLocaleLowerCase())
-                      .includes(s.name.toLocaleLowerCase())
-                  : true,
-              )
-              .filter((s) => {
-                if (search.length > 0) {
-                  return s.name
-                    .toLocaleLowerCase()
-                    .includes(search.toLocaleLowerCase());
-                }
-                return true;
-              }).length > 0 ? (
-              station.data
+          {isAdding && (
+            <div className="mt-2 flex flex-col gap-1">
+              <h1 className="px-[8px] text-sm opacity-50">Belum Tersimpan</h1>
+              {(station.data ?? [])
                 ?.filter((s) =>
                   selected.length > 0
                     ? !selected
@@ -442,45 +429,65 @@ const MainPage = () => {
                       .includes(search.toLocaleLowerCase());
                   }
                   return true;
-                })
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map((s) => (
-                  <button
-                    type="button"
-                    key={s.id}
-                    className="flex items-center rounded-md px-[8px] py-[4px] text-left capitalize transition-all hover:bg-foreground/10"
-                    onClick={() => {
-                      if (
-                        selected
+                }).length > 0 ? (
+                station.data
+                  ?.filter((s) =>
+                    selected.length > 0
+                      ? !selected
                           .map(({ name }) => name.toLocaleLowerCase())
                           .includes(s.name.toLocaleLowerCase())
-                      ) {
-                        setSelected((prev) =>
-                          prev.filter(
-                            (item) =>
-                              item.name.toLocaleLowerCase() !==
-                                s.name.toLocaleLowerCase() && item.id !== s.id,
-                          ),
-                        );
-                      } else {
-                        setSelected((prev) => [
-                          ...prev,
-                          {
-                            id: s.id,
-                            name: s.name,
-                            savedAt: new Date().toISOString(),
-                          },
-                        ]);
-                      }
-                    }}
-                  >
-                    {s.name.toLocaleLowerCase()}
-                  </button>
-                ))
-            ) : (
-              <p className="px-[8px] py-1 text-sm opacity-50">Tidak tersedia</p>
-            )}
-          </div>
+                      : true,
+                  )
+                  .filter((s) => {
+                    if (search.length > 0) {
+                      return s.name
+                        .toLocaleLowerCase()
+                        .includes(search.toLocaleLowerCase());
+                    }
+                    return true;
+                  })
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((s) => (
+                    <button
+                      type="button"
+                      key={s.id}
+                      className="flex items-center rounded-md px-[8px] py-[4px] text-left capitalize transition-all hover:bg-foreground/10"
+                      onClick={() => {
+                        if (
+                          selected
+                            .map(({ name }) => name.toLocaleLowerCase())
+                            .includes(s.name.toLocaleLowerCase())
+                        ) {
+                          setSelected((prev) =>
+                            prev.filter(
+                              (item) =>
+                                item.name.toLocaleLowerCase() !==
+                                  s.name.toLocaleLowerCase() &&
+                                item.id !== s.id,
+                            ),
+                          );
+                        } else {
+                          setSelected((prev) => [
+                            ...prev,
+                            {
+                              id: s.id,
+                              name: s.name,
+                              savedAt: new Date().toISOString(),
+                            },
+                          ]);
+                        }
+                      }}
+                    >
+                      {s.name.toLocaleLowerCase()}
+                    </button>
+                  ))
+              ) : (
+                <p className="px-[8px] py-1 text-sm opacity-50">
+                  Tidak tersedia
+                </p>
+              )}
+            </div>
+          )}
         </section>
 
         <section
