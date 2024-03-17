@@ -49,11 +49,13 @@ export default function RootLayout({
           </MainProvider>
         </TRPCReactProvider>
       </body>
-      <Script
-        defer
-        src="https://analytics.zulio.me/script.js"
-        data-website-id="20b80658-98dc-4ef8-92d5-0a7d7d153ad0"
-      />
+      {env.NODE_ENV === "production" ? (
+        <Script
+          defer
+          src="https://analytics.zulio.me/script.js"
+          data-website-id="20b80658-98dc-4ef8-92d5-0a7d7d153ad0"
+        />
+      ) : null}
     </html>
   );
 }
