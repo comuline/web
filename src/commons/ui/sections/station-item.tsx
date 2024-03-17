@@ -1,6 +1,6 @@
 "use client";
 
-import { type GroupedSchedule } from "@/commons/type";
+import type { GroupedSchedule } from "@/commons/type";
 import * as Accordion from "@/commons/ui/components/accordion";
 import { cn } from "@/commons/utils/cn";
 import {
@@ -34,26 +34,26 @@ const StationItem = ({
         : undefined,
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const groupedSchedule: GroupedSchedule = data?.reduce((acc: any, obj) => {
-    const lineKey = `${obj.line}-${obj.color}`;
-    const destKey = obj.destination;
+  const groupedSchedule: GroupedSchedule = data?.reduce(
+    (acc: GroupedSchedule, obj) => {
+      const lineKey = `${obj.line}-${obj.color}`;
+      const destKey = obj.destination;
 
-    if (!acc[lineKey]) {
-      acc[lineKey] = {};
-    }
+      const lineKeyRecord = acc[lineKey] ?? {};
+      const destKeyArray = lineKeyRecord[destKey] ?? [];
 
-    if (!acc[lineKey][destKey]) {
-      acc[lineKey][destKey] = [];
-    }
+      destKeyArray.push({
+        ...obj,
+        timeEstimated: removeSeconds(obj.timeEstimated),
+        destinationTime: removeSeconds(obj.destinationTime),
+      });
 
-    acc[lineKey][destKey].push({
-      ...obj,
-      timeEstimated: removeSeconds(obj.timeEstimated),
-      destinationTime: removeSeconds(obj.destinationTime),
-    });
-    return acc;
-  }, {});
+      lineKeyRecord[destKey] = destKeyArray;
+      acc[lineKey] = lineKeyRecord;
+      return acc;
+    },
+    {},
+  );
 
   useEffect(() => {
     if (isLoading) return;
