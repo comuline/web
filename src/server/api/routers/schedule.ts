@@ -13,7 +13,7 @@ export const scheduleRouter = createTRPCRouter({
 
       try {
         const req = await fetch(
-          `${env.API_URL}/schedule/${input.toLocaleUpperCase()}?from_now=true`,
+          `${env.API_URL}/schedule/${input.toLocaleUpperCase()}?is_from_now=true`,
         );
 
         const data = (await req.json()) as {
