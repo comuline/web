@@ -10,6 +10,7 @@ import {
 } from "@/commons/utils/date";
 import { api } from "@/trpc/react";
 import { Loader, RefreshCcw } from "lucide-react";
+import Link from "next/link";
 import { useEffect } from "react";
 
 const scheduleKey = (id: string) => `jadwal-krl-schedule-${id}`;
@@ -159,12 +160,15 @@ const StationItem = ({
                             {groupedSchedule[lineKey]?.[destKey]?.[0]
                               ?.timeEstimated ? (
                               <div className="flex flex-col gap-1 text-right">
-                                <p className="font-mono text-lg font-medium tracking-tight">
+                                <Link
+                                  href={`/${groupedSchedule[lineKey]?.[destKey]?.[0]?.trainId}`}
+                                  className="font-mono text-lg font-medium tracking-tight"
+                                >
                                   {formatTime(
                                     groupedSchedule[lineKey]?.[destKey]?.[0]
                                       ?.timeEstimated,
                                   )}
-                                </p>
+                                </Link>
 
                                 <p className="text-xs opacity-30">
                                   {getRelativeTimeString(
