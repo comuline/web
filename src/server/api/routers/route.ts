@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { env } from "@/env";
-import { type Schedule } from "@/commons/type";
+import type { Station, Schedule } from "@/commons/type";
 
 export const routeRouter = createTRPCRouter({
   getByTrainId: publicProcedure
@@ -16,7 +16,7 @@ export const routeRouter = createTRPCRouter({
 
         const data = (await req.json()) as {
           status: number;
-          data: Schedule[];
+          data: (Schedule & { stationName: Station["name"] })[];
         };
 
         return data.data ?? [];

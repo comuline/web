@@ -2,6 +2,7 @@
 
 import type { GroupedSchedule } from "@/commons/type";
 import * as Accordion from "@/commons/ui/components/accordion";
+import TrainRouteDialog from "@/commons/ui/sections/train-route-dialog";
 import { cn } from "@/commons/utils/cn";
 import {
   formatTime,
@@ -10,7 +11,6 @@ import {
 } from "@/commons/utils/date";
 import { api } from "@/trpc/react";
 import { Loader, RefreshCcw } from "lucide-react";
-import Link from "next/link";
 import { useEffect } from "react";
 
 const scheduleKey = (id: string) => `jadwal-krl-schedule-${id}`;
@@ -153,22 +153,32 @@ const StationItem = ({
                             <p>Arah menuju</p>
                             <p>Berangkat pukul</p>
                           </div>
-                          <div className="flex items-start justify-between gap-2 ">
-                            <h3 className="font text-xl font-medium capitalize">
-                              {destKey.toLocaleLowerCase()}
-                            </h3>
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex items-center">
+                              <h3 className="font text-xl font-medium capitalize">
+                                {destKey.toLocaleLowerCase()}{" "}
+                              </h3>
+                              <TrainRouteDialog
+                                currentStationId={station.id}
+                                trainId={
+                                  groupedSchedule[lineKey]?.[destKey]?.[0]
+                                    ?.trainId ?? ""
+                                }
+                                classNames={{
+                                  // margin top to perfectly align with heading
+                                  trigger: "ml-2 mt-0.5",
+                                }}
+                              />
+                            </div>
                             {groupedSchedule[lineKey]?.[destKey]?.[0]
                               ?.timeEstimated ? (
                               <div className="flex flex-col gap-1 text-right">
-                                <Link
-                                  href={`/${groupedSchedule[lineKey]?.[destKey]?.[0]?.trainId}`}
-                                  className="font-mono text-lg font-medium tracking-tight"
-                                >
+                                <p className="font-mono text-lg font-medium tracking-tight">
                                   {formatTime(
                                     groupedSchedule[lineKey]?.[destKey]?.[0]
                                       ?.timeEstimated,
                                   )}
-                                </Link>
+                                </p>
 
                                 <p className="text-xs opacity-30">
                                   {getRelativeTimeString(
