@@ -9,10 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "lucide-react": "^0.456.0",
     "preact": "^10.24.3"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.9.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.14",
     "typescript": "~5.6.2",
     "vite": "^5.4.10"
   }
