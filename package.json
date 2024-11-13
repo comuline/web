@@ -1,7 +1,7 @@
 {
-  "name": "preact",
+  "name": "@comuline/web",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,12 +12,16 @@
     "@fontsource/geist-mono": "^5.1.0",
     "@fontsource/geist-sans": "^5.1.0",
     "lucide-react": "^0.456.0",
-    "preact": "^10.24.3"
+    "preact": "^10.24.3",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.9.1",
+    "@types/node": "^22.9.0",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.8",
     "tailwindcss": "^3.4.14",
     "typescript": "~5.6.2",
     "vite": "^5.4.10"
