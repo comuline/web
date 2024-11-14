@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "bunx wrangler pages deploy .dist --project-name comuline-web --commit-dirty=true"
   },
   "dependencies": {
     "@fontsource/geist-mono": "^5.1.0",
