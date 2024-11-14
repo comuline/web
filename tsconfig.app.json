@@ -29,7 +29,10 @@
     "noUncheckedSideEffectImports": true,
 
     /* Path Aliases */
-    "baseUrl": "."
+    "baseUrl": ".",
+
+    /* Boost type safety */
+    "noUncheckedIndexedAccess": true
   },
   "include": ["src"]
 }

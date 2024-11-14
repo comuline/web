@@ -1,11 +1,23 @@
+import createClient from "openapi-fetch";
 import { useState } from "preact/hooks";
+import { paths } from "./schema";
+import { createQueryHook } from "swr-openapi";
+
+const client = createClient<paths>({
+  baseUrl: "https://comuline-api.zulio.workers.dev/",
+});
+
+const useStations = createQueryHook(client, "stations");
 
 export function App() {
   const [count, setCount] = useState(0);
 
+  const { data } = useStations("/v1/station");
+
   return (
     <div class="bg-black text-white">
       <h1 class="bg-black">Vite + Preact</h1>
+      <pre>{JSON.stringify(data?.data, null, 2)}</pre>
       <div class="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
