@@ -214,7 +214,12 @@ export interface components {
              *         "fg_enable": 1
              *       }
              *     } */
-            metadata: Record<string, never>;
+            metadata: {
+                origin?: {
+                    daop?: number | null;
+                    fg_enable?: number | null;
+                };
+            };
             /**
              * Format: date-time
              * @example 2024-03-10T09:55:07.213Z
@@ -279,7 +284,11 @@ export interface components {
              *         "color": "#DD0067"
              *       }
              *     } */
-            metadata: Record<string, never>;
+            metadata: {
+                origin?: {
+                    color?: string | null;
+                };
+            };
             /**
              * Format: date-time
              * @example 2024-03-10T09:55:07.213Z
