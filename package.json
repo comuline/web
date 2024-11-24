@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "deploy": "bunx wrangler pages deploy .dist --project-name comuline-web --commit-dirty=true",
-    "get-schema": "bunx openapi-typescript https://comuline-api.zulio.workers.dev/openapi -o src/schema.d.ts"
+    "get-schema": "bun run --env-file .env scripts/schema.ts"
   },
   "dependencies": {
     "@fontsource/geist-mono": "^5.1.0",
@@ -22,8 +22,10 @@
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.9.1",
+    "@types/bun": "^1.1.13",
     "@types/node": "^22.9.0",
     "autoprefixer": "^10.4.20",
+    "bun": "^1.1.36",
     "openapi-typescript": "^7.4.3",
     "postcss": "^8.4.49",
     "prettier": "^3.3.3",
