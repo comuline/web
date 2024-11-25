@@ -1,44 +1,37 @@
-import createClient from "openapi-fetch";
-import { useState } from "preact/hooks";
-import { paths } from "./schema";
-import { createQueryHook } from "swr-openapi";
+import { useSchedule } from "./hooks/use-schedule";
+import { components } from "./schema";
 
-const client = createClient<paths>({
-  baseUrl: "https://comuline-api.zulio.workers.dev/",
-});
-
-const useStations = createQueryHook(client, "stations");
+export type GroupedSchedule = Record<
+  string,
+  Record<string, Array<components["schemas"]["Schedule"]>>
+>;
 
 export function App() {
-  const [count, setCount] = useState(0);
+  const { data, isLoading, isValidating, error } = useSchedule("MRI");
 
-  const { data } = useStations("/v1/station");
+  const groupedSchedule = data?.data.reduce((acc: GroupedSchedule, obj) => {
+    const lineKey = `${obj.line}-${obj.metadata.origin?.color}`;
+    const destKey = obj.station_destination_id;
+
+    const lineKeyRecord = acc[lineKey] ?? {};
+    const destKeyArray = lineKeyRecord[destKey] ?? [];
+
+    destKeyArray.push({ ...obj });
+
+    lineKeyRecord[destKey] = destKeyArray;
+    acc[lineKey] = lineKeyRecord;
+    return acc;
+  }, {});
 
   return (
-    <div class="bg-black text-white">
-      <h1 class="bg-black">Vite + Preact</h1>
-      <pre>{JSON.stringify(data?.data, null, 2)}</pre>
-      <div class="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/app.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p>
-        Check out{" "}
-        <a
-          href="https://preactjs.com/guide/v10/getting-started#create-a-vite-powered-preact-app"
-          target="_blank"
-        >
-          create-preact
-        </a>
-        , the official Preact + Vite starter
-      </p>
-      <p class="read-the-docs">
-        Click on the Vite and Preact logos to learn more
-      </p>
+    <div class="min-w-screen flex-cole flex min-h-screen">
+      <section className="mx-auto flex max-w-2xl">
+        {isLoading ? (
+          <p>loading</p>
+        ) : (
+          <pre>{JSON.stringify(data, null, 2)}</pre>
+        )}
+      </section>
     </div>
   );
 }
