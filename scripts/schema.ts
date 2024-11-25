@@ -1,10 +1,11 @@
 import { $ } from "bun";
 
 try {
-  const COMULINE_API_URL = process.env.COMULINE_API_URL;
-  if (!COMULINE_API_URL) throw new Error("COMULINE_API_URL is not set");
+  const VITE_COMULINE_API_URL = process.env.VITE_COMULINE_API_URL;
+  if (!VITE_COMULINE_API_URL)
+    throw new Error("VITE_COMULINE_API_URL is not set");
   const output =
-    await $`openapi-typescript ${COMULINE_API_URL}/openapi -o src/schema.d.ts`.text();
+    await $`openapi-typescript ${VITE_COMULINE_API_URL}/openapi -o src/schema.d.ts`.text();
   console.log(output);
 } catch (err) {
   console.log(`Failed with code ${err.exitCode}`);
