@@ -1,4 +1,4 @@
-import preact from "@preact/preset-vite";
+import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import path from "path";
 
@@ -9,7 +9,7 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  plugins: [preact()],
+  plugins: [react()],
   build: {
     outDir: ".dist",
     sourcemap: "hidden",
