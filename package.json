@@ -13,11 +13,13 @@
   "dependencies": {
     "@fontsource/geist-mono": "^5.1.0",
     "@fontsource/geist-sans": "^5.1.0",
+    "clsx": "^2.1.1",
     "lucide-react": "^0.456.0",
     "openapi-fetch": "^0.13.0",
     "preact": "^10.24.3",
     "swr": "^2.2.5",
     "swr-openapi": "^5.1.0",
+    "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
