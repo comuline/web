@@ -246,12 +246,12 @@ export interface components {
              * @description Station ID where the train originates
              * @example JAKK
              */
-            station_origin_id: string | null;
+            station_origin_id: string;
             /**
              * @description Station ID where the train terminates
              * @example TPK
              */
-            station_destination_id: string | null;
+            station_destination_id: string;
             /**
              * @description Train ID
              * @example 2400
@@ -351,14 +351,14 @@ export interface components {
                  * @description Station ID where the train originates
                  * @example JAKK
                  */
-                station_origin_id: string | null;
+                station_origin_id: string;
                 /** @example JAKARTAKOTA */
                 station_origin_name: string;
                 /**
                  * @description Station ID where the train terminates
                  * @example TPK
                  */
-                station_destination_id: string | null;
+                station_destination_id: string;
                 /** @example TANJUNGPRIUK */
                 station_destination_name?: string;
                 /**
