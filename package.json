@@ -11,6 +11,7 @@
     "get-schema": "bun run --env-file .env scripts/schema.ts"
   },
   "dependencies": {
+    "@babel/runtime": "^7.26.0",
     "@fontsource/geist-mono": "^5.1.0",
     "@fontsource/geist-sans": "^5.1.0",
     "@radix-ui/react-accordion": "^1.2.1",
