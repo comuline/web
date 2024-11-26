@@ -3,15 +3,17 @@ import { createRoot } from "react-dom/client";
 import { App } from "./app";
 import "./index.css";
 import { SWRConfig } from "swr";
+import { createKey } from "./utils/key";
 
 function localStorageProvider(): Map<string, any> {
+  const key = createKey(["cache"]);
   const map = new Map<string, any>(
-    JSON.parse(localStorage.getItem("comuline-cache") || "[]"),
+    JSON.parse(localStorage.getItem(key) || "[]"),
   );
 
   window.addEventListener("beforeunload", () => {
     const appCache = JSON.stringify(Array.from(map.entries()));
-    localStorage.setItem("comuline-cache", appCache);
+    localStorage.setItem(key, appCache);
   });
 
   return map;
