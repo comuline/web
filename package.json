@@ -1,5 +1,10 @@
 {
   "name": "@comuline/web",
+  "author": {
+    "name": "Comuline",
+    "url": "https://github.com/comuline",
+    "email": "support@comuline.com"
+  },
   "private": true,
   "version": "1.0.0",
   "type": "module",
