@@ -18,7 +18,4 @@ export const useSchedule = (station_id: string) =>
         },
       },
     },
-    {
-      keepPreviousData: true,
-    },
   );
