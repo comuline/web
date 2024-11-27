@@ -32,9 +32,13 @@ const ScheduleLine = ({
       </div>
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center">
-          <h3 className="font text-xl font-medium capitalize">
-            {station?.name.toLocaleLowerCase()}{" "}
-          </h3>
+          {station ? (
+            <h3 className="font text-xl font-medium capitalize">
+              {station.name.toLocaleLowerCase()}{" "}
+            </h3>
+          ) : (
+            <div className="h-5 w-20 rounded-md bg-zinc-500/10" />
+          )}
         </div>
         {groupedSchedule[lineKey]?.[destKey]?.[0]?.departs_at ? (
           <div className="flex flex-col gap-1 text-right">
@@ -71,44 +75,6 @@ const ScheduleLine = ({
           </div>
         </div>
       ) : null}
-      {/*       {(groupedSchedule[lineKey]?.[destKey] ?? []).slice(
-        5,
-        (groupedSchedule[lineKey]?.[destKey] ?? []).length - 5,
-      ).length > 0 ? (
-        <Accordion.Root type="multiple" className="mt-0 w-full">
-          <Accordion.Item
-            value="jam-keberangkatan"
-            className={cn("pb-2", {
-              "border-b-none": id === arr.length - 1 && arr.length > 1,
-            })}
-          >
-            <Accordion.Trigger className="my-0 h-[10px] text-xs font-normal opacity-30">
-              Lihat semua
-            </Accordion.Trigger>
-            <Accordion.Content className="grid grid-cols-4 gap-2 pt-1 md:grid-cols-5">
-              {(groupedSchedule[lineKey]?.[destKey] ?? [])
-                .slice(
-                  5,
-                  (groupedSchedule[lineKey]?.[destKey] ?? []).length - 5,
-                )
-                .map((train) => (
-                  <div
-                    key={train.id}
-                    className="flex rounded-md bg-zinc-500/10 px-2 py-1.5 text-sm"
-                  >
-                    <span className="mx-auto text-center font-mono font-semibold text-foreground/80">
-                      {formatTime(train.departs_at)}
-                    </span>
-                  </div>
-                ))}
-            </Accordion.Content>
-          </Accordion.Item>
-        </Accordion.Root>
-      ) : null} */}
-
-      {/*     : id === arr.length - 1 && arr.length > 0 ? null : (
-        <span className="h-[1px] w-full border-b pb-2 pt-1" />
-      )} */}
     </div>
   );
 };
@@ -118,9 +84,8 @@ export const StationItem = ({ stationId }: { stationId: string }) => {
 
   const groupedSchedule = React.useMemo(() => {
     const data = schedules?.data;
-    if (!data) return {};
     return data
-      .filter((x) => {
+      ?.filter((x) => {
         const date = new Date(x.departs_at);
         const now = new Date();
         return (
@@ -158,9 +123,13 @@ export const StationItem = ({ stationId }: { stationId: string }) => {
           <div className="flex w-full flex-col gap-1 text-left">
             <p className="text-xs opacity-50">Stasiun</p>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-semibold capitalize">
-                {station?.data.name.toLocaleLowerCase()}
-              </h1>
+              {station?.data.name ? (
+                <h1 className="text-2xl font-semibold capitalize">
+                  {station?.data.name.toLocaleLowerCase()}
+                </h1>
+              ) : (
+                <div className="h-6.5 w-20 rounded-md bg-zinc-500/10" />
+              )}
               {isLoading || isValidating ? (
                 <Loading01 className="size-4 animate-spin opacity-50" />
               ) : null}
@@ -169,7 +138,7 @@ export const StationItem = ({ stationId }: { stationId: string }) => {
         </Accordion.Trigger>
 
         <Accordion.Content>
-          {isLoading ? (
+          {!schedules || isLoading ? (
             <div className="flex animate-pulse flex-col gap-2">
               <div className="flex h-full w-full gap-3">
                 <div

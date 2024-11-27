@@ -16,8 +16,8 @@ export function App() {
 
   return (
     <div className="min-w-screen flex min-h-screen flex-col">
-      <section className="relative mx-auto flex w-full max-w-[550px] flex-col">
-        <nav className="sticky top-0 z-10 flex h-fit flex-col gap-2 bg-white p-5">
+      <section className="relative mx-auto flex w-full max-w-[500px] flex-col">
+        <nav className="sticky top-0 z-20 flex h-fit flex-col gap-2 bg-white px-4 py-5">
           <AnimatePresence>
             <motion.div animate={{ height }}>
               <div
@@ -99,7 +99,7 @@ export function App() {
                           "flex w-full items-center justify-between gap-2 will-change-transform"
                         }
                       >
-                        <div className="flex items-center gap-1 py-1 hover:opacity-100">
+                        <div className="flex items-center gap-1 py-1 opacity-50 transition duration-300 hover:opacity-100">
                           <svg
                             width="25"
                             height="25"
@@ -139,7 +139,7 @@ export function App() {
                     setState((prev) => (prev === "ADD" ? "VIEW" : "ADD"))
                   }
                   data-state={"open"}
-                  className="rounded-md p-1.5 transition hover:bg-zinc-100"
+                  className="rounded-md p-2 transition hover:bg-zinc-100"
                 >
                   <Plus
                     className={cn(
@@ -155,7 +155,7 @@ export function App() {
             </motion.div>
           </AnimatePresence>
         </nav>
-        <section className="relative mx-auto flex w-full max-w-[500px] flex-col">
+        <section className="relative mx-auto flex w-full max-w-[500px] flex-col px-5">
           {STATION_IDs.map((stationId) => (
             <StationItem key={stationId} stationId={stationId} />
           ))}
