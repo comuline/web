@@ -12,11 +12,13 @@ export function App() {
   const [state, setState] = React.useState<"VIEW" | "SEARCH" | "ADD">("VIEW");
   const [ref, height] = useMeasure<HTMLDivElement>();
 
-  useOnClickOutside(ref, () => setState("VIEW"));
+  useOnClickOutside(ref, () =>
+    setState((prev) => (prev === "ADD" ? prev : "VIEW")),
+  );
 
   return (
     <div className="min-w-screen flex min-h-screen flex-col">
-      <section className="relative mx-auto flex w-full max-w-[500px] flex-col">
+      <section className="relative mx-auto flex w-full max-w-[500px] flex-col overflow-hidden">
         <nav className="sticky top-0 z-20 flex h-fit flex-col gap-2 bg-white px-4 py-5">
           <AnimatePresence>
             <motion.div animate={{ height }}>
@@ -26,6 +28,7 @@ export function App() {
               >
                 <AnimatePresence mode="popLayout" initial={false}>
                   <MotionConfig
+                    key="switch-search"
                     transition={{ type: "spring", duration: 0.8, bounce: 0.3 }}
                   >
                     {state === "SEARCH" ? (
@@ -33,21 +36,15 @@ export function App() {
                         key="search"
                         initial={{
                           opacity: 0,
-                          y: -10,
-                          scale: 0.9,
-                          filter: "blur(15px)",
+                          y: "100%",
                         }}
                         animate={{
                           opacity: 1,
                           y: 0,
-                          scale: 1,
-                          filter: "blur(0px)",
                         }}
                         exit={{
                           opacity: 0,
-                          y: 10,
-                          scale: 0.9,
-                          filter: "blur(15px)",
+                          y: "-100%",
                         }}
                         className={
                           "flex w-full items-center justify-between gap-2 rounded-md bg-zinc-100 px-2 py-0.5 will-change-transform"
@@ -57,8 +54,9 @@ export function App() {
                           <SearchMd className="size-5" />
                         </span>
                         <input
+                          key="search-saved-station"
                           placeholder="Cari stasiun"
-                          autoFocus
+                          autoFocus={state === "SEARCH"}
                           className="text-md w-full bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-transparent"
                         />
                         <motion.button
@@ -79,21 +77,15 @@ export function App() {
                         key="logo"
                         initial={{
                           opacity: 0,
-                          y: 10,
-                          scale: 0.9,
-                          filter: "blur(15px)",
+                          y: "-100%",
                         }}
                         animate={{
                           opacity: 1,
                           y: 0,
-                          scale: 1,
-                          filter: "blur(0px)",
                         }}
                         exit={{
                           opacity: 0,
-                          y: -10,
-                          scale: 0.9,
-                          filter: "blur(15px)",
+                          y: "100%",
                         }}
                         className={
                           "flex w-full items-center justify-between gap-2 will-change-transform"
@@ -117,13 +109,27 @@ export function App() {
                             Comuline
                           </h1>
                         </div>
-                        <motion.button
-                          whileTap={{ scale: 0.75 }}
-                          onClick={() => setState("SEARCH")}
-                          className="rounded-md p-1.5 transition duration-200 ease-in-out hover:bg-zinc-100"
-                        >
-                          <SearchMd className="size-5" />
-                        </motion.button>
+                        {state === "VIEW" ? (
+                          <motion.button
+                            whileTap={{ scale: 0.75 }}
+                            initial={{
+                              filter: "blur(10px)",
+                              opacity: 0,
+                            }}
+                            animate={{
+                              filter: "blur(0px)",
+                              opacity: 1,
+                            }}
+                            exit={{
+                              filter: "blur(10px)",
+                              opacity: 0,
+                            }}
+                            onClick={() => setState("SEARCH")}
+                            className="rounded-md p-1.5 transition duration-200 ease-in-out hover:bg-zinc-100"
+                          >
+                            <SearchMd className="size-5" />
+                          </motion.button>
+                        ) : null}
                       </motion.div>
                     )}
                   </MotionConfig>
@@ -155,11 +161,76 @@ export function App() {
             </motion.div>
           </AnimatePresence>
         </nav>
-        <section className="relative mx-auto flex w-full max-w-[500px] flex-col px-5">
-          {STATION_IDs.map((stationId) => (
-            <StationItem key={stationId} stationId={stationId} />
-          ))}
-        </section>
+        <MotionConfig
+          key="switch-search"
+          transition={{ duration: 0.5, type: "spring", bounce: 0 }}
+        >
+          <AnimatePresence initial={false} mode="popLayout">
+            {state === "ADD" ? (
+              <motion.section
+                layout
+                key="add-station"
+                initial={{
+                  opacity: 0,
+                  x: "100%",
+                  filter: "blur(50px)",
+                }}
+                animate={{
+                  opacity: 1,
+                  x: 0,
+                  filter: "blur(0px)",
+                }}
+                exit={{
+                  opacity: 0,
+                  x: "100%",
+                  filter: "blur(50px)",
+                }}
+                className="relative mx-auto flex w-full max-w-[500px] flex-col px-5"
+              >
+                <div className="h-[500px] w-full">
+                  <div
+                    className={
+                      "flex w-full items-center justify-between gap-2 rounded-md bg-zinc-100 px-2 py-0.5"
+                    }
+                  >
+                    <span className="p-1.5 opacity-50 transition duration-200 ease-in-out hover:opacity-100">
+                      <SearchMd className="size-5" />
+                    </span>
+                    <input
+                      key="search-new-station"
+                      placeholder="Cari stasiun"
+                      className="text-md w-full bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-transparent"
+                    />
+                  </div>
+                </div>
+              </motion.section>
+            ) : (
+              <motion.section
+                key="station-list"
+                initial={{
+                  opacity: 0,
+                  x: "-100%",
+                  filter: "blur(50px)",
+                }}
+                animate={{
+                  opacity: 1,
+                  x: 0,
+                  filter: "blur(0px)",
+                }}
+                exit={{
+                  opacity: 0,
+                  x: "-100%",
+                  filter: "blur(50px)",
+                }}
+                className="relative mx-auto flex w-full max-w-[500px] flex-col px-5"
+              >
+                {STATION_IDs.map((stationId) => (
+                  <StationItem key={stationId} stationId={stationId} />
+                ))}
+              </motion.section>
+            )}
+          </AnimatePresence>
+        </MotionConfig>
       </section>
     </div>
   );
