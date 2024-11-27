@@ -116,33 +116,32 @@ const ScheduleLine = ({
 export const StationItem = ({ stationId }: { stationId: string }) => {
   const { data: schedules, isLoading, isValidating } = useSchedule(stationId);
 
-  const groupedSchedule = React.useMemo(
-    () =>
-      schedules?.data
-        .filter((x) => {
-          // filter clock from now on
-          const date = new Date(x.departs_at);
-          const now = new Date();
-          return (
-            date.getHours() + date.getMinutes() / 60 >=
-            now.getHours() + now.getMinutes() / 60
-          );
-        })
-        .reduce((acc: GroupedSchedule, obj) => {
-          const lineKey = `${obj.line}-${obj.metadata.origin?.color}`;
-          const destKey = obj.station_destination_id;
+  const groupedSchedule = React.useMemo(() => {
+    const data = schedules?.data;
+    if (!data) return {};
+    return data
+      .filter((x) => {
+        const date = new Date(x.departs_at);
+        const now = new Date();
+        return (
+          date.getHours() + date.getMinutes() / 60 >=
+          now.getHours() + now.getMinutes() / 60
+        );
+      })
+      .reduce((acc: GroupedSchedule, obj) => {
+        const lineKey = `${obj.line}-${obj.metadata.origin?.color}`;
+        const destKey = obj.station_destination_id;
 
-          const lineKeyRecord = acc[lineKey] ?? {};
-          const destKeyArray = lineKeyRecord[destKey] ?? [];
+        const lineKeyRecord = acc[lineKey] ?? {};
+        const destKeyArray = lineKeyRecord[destKey] ?? [];
 
-          destKeyArray.push({ ...obj });
+        destKeyArray.push({ ...obj });
 
-          lineKeyRecord[destKey] = destKeyArray;
-          acc[lineKey] = lineKeyRecord;
-          return acc;
-        }, {}),
-    [schedules, isValidating],
-  );
+        lineKeyRecord[destKey] = destKeyArray;
+        acc[lineKey] = lineKeyRecord;
+        return acc;
+      }, {});
+  }, [schedules, isValidating]);
 
   const { data: station } = useStation(stationId);
 
