@@ -26,6 +26,9 @@ const ScheduleLine = ({
 
   return (
     <div key={destKey} className="flex flex-col gap-1 pb-1 pt-0.5">
+      <p className="font-mono text-xs" style={{ color: lineKey.split("-")[1] }}>
+        {groupedSchedule[lineKey]?.[destKey]?.[0]?.line}
+      </p>
       <div className="flex items-center justify-between gap-2 text-xs opacity-50">
         <p>Arah menuju</p>
         <p>Berangkat pukul</p>
@@ -33,9 +36,14 @@ const ScheduleLine = ({
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center">
           {station ? (
-            <h3 className="font text-xl font-medium capitalize">
-              {station.name.toLocaleLowerCase()}{" "}
-            </h3>
+            <div className="flex flex-col gap-1 text-left">
+              <h3 className="font text-xl font-medium capitalize">
+                {station.name.toLocaleLowerCase()}{" "}
+              </h3>
+              <p className="font-mono text-xs opacity-30">
+                {groupedSchedule[lineKey]?.[destKey]?.[0]?.train_id}
+              </p>
+            </div>
           ) : (
             <div className="h-5 w-20 rounded-md bg-zinc-500/10" />
           )}
@@ -56,53 +64,78 @@ const ScheduleLine = ({
           </div>
         ) : null}
       </div>
-      {(groupedSchedule[lineKey]?.[destKey] ?? []).slice(1, 5).length > 0 ? (
-        <Accordion.Root
-          type="multiple"
-          className="w-full pr-1 pt-2"
-          defaultValue={[]}
-        >
-          <Accordion.Item value={`${lineKey}-${destKey}`}>
-            <Accordion.Trigger>
-              <div className="flex w-full flex-col gap-2.5 text-left">
-                <p className="text-xs opacity-50">Jam berikutnya</p>
+      {(() => {
+        const moreSchedules = (groupedSchedule[lineKey]?.[destKey] ?? []).slice(
+          1,
+          5,
+        );
 
-                <div className="grid grid-cols-2 gap-1.5 md:grid-cols-4 md:gap-1">
-                  {(groupedSchedule[lineKey]?.[destKey] ?? [])
-                    .slice(1, 5)
-                    .map((train) => (
-                      <div key={train.id} className="flex flex-col gap-0.5">
-                        <p className="font-mono text-sm font-semibold">
-                          {formatDateToTime(train.departs_at)}
-                        </p>
-                        <p className="text-xs opacity-30">
-                          {formatRelativeToNow(train.departs_at)}
-                        </p>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            </Accordion.Trigger>
-            <Accordion.Content className="flex w-full text-left">
-              <div className="grid w-full grid-cols-2 gap-1.5 md:grid-cols-4 md:gap-1">
-                {(groupedSchedule[lineKey]?.[destKey] ?? [])
-                  .slice(5)
-                  .map((train) => (
-                    <div key={train.id} className="flex flex-col gap-0.5">
-                      <p className="font-mono text-sm font-semibold">
-                        {formatDateToTime(train.departs_at)}
-                      </p>
-                      <p className="text-xs opacity-30">
-                        {formatRelativeToNow(train.departs_at)}
-                      </p>
-                    </div>
-                  ))}
+        return moreSchedules.length > 0 ? (
+          moreSchedules.length < 4 ? (
+            <div className="flex w-full flex-col gap-2.5 text-left">
+              <p className="text-xs opacity-50">Jam berikutnya</p>
+
+              <div className="grid grid-cols-2 gap-1.5 md:grid-cols-4 md:gap-1">
+                {moreSchedules.map((train) => (
+                  <div key={train.id} className="flex flex-col gap-0.5">
+                    <p className="font-mono text-sm font-semibold">
+                      {formatDateToTime(train.departs_at)}
+                    </p>
+                    <p className="text-xs opacity-30">
+                      {formatRelativeToNow(train.departs_at)}
+                    </p>
+                  </div>
+                ))}
               </div>
               <span className="size-4 h-0" />
-            </Accordion.Content>
-          </Accordion.Item>
-        </Accordion.Root>
-      ) : null}
+            </div>
+          ) : (
+            <Accordion.Root
+              type="multiple"
+              className="w-full pr-1 pt-2"
+              defaultValue={[]}
+            >
+              <Accordion.Item value={`${lineKey}-${destKey}`}>
+                <Accordion.Trigger className="pb-1.5 md:pb-2">
+                  <div className="flex w-full flex-col gap-2.5 text-left">
+                    <p className="text-xs opacity-50">Jam berikutnya</p>
+
+                    <div className="grid w-full grid-cols-2 gap-1.5 md:grid-cols-4 md:gap-1">
+                      {moreSchedules.map((train) => (
+                        <div key={train.id} className="flex flex-col gap-0.5">
+                          <p className="font-mono text-sm font-semibold">
+                            {formatDateToTime(train.departs_at)}
+                          </p>
+                          <p className="text-xs opacity-30">
+                            {formatRelativeToNow(train.departs_at)}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </Accordion.Trigger>
+                <Accordion.Content className="flex gap-1 text-left">
+                  <div className="grid w-full grid-cols-2 gap-1.5 md:grid-cols-4 md:gap-2">
+                    {(groupedSchedule[lineKey]?.[destKey] ?? [])
+                      .slice(5)
+                      .map((train) => (
+                        <div key={train.id} className="flex flex-col gap-0.5">
+                          <p className="font-mono text-sm font-semibold">
+                            {formatDateToTime(train.departs_at)}
+                          </p>
+                          <p className="text-xs opacity-30">
+                            {formatRelativeToNow(train.departs_at)}
+                          </p>
+                        </div>
+                      ))}
+                  </div>
+                  <span className="size-4 h-0" />
+                </Accordion.Content>
+              </Accordion.Item>
+            </Accordion.Root>
+          )
+        ) : null;
+      })()}
     </div>
   );
 };
@@ -114,6 +147,7 @@ export const StationItem = ({ stationId }: { stationId: string }) => {
     const data = schedules?.data;
     return data
       ?.filter((x) => {
+        return true;
         const date = new Date(x.departs_at);
         const now = new Date();
         return (

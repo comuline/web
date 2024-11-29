@@ -3,10 +3,9 @@ import { AnimatePresence, motion, MotionConfig } from "motion/react";
 import React from "react";
 import { StationItem } from "./components/station-item";
 import { useMeasure } from "./hooks/use-measure";
-import { cn, createKey } from "./utils";
-import { useOnClickOutside } from "./hooks/use-click-outside";
-import { useStations } from "./hooks/use-stations";
 import { usePersistedState } from "./hooks/use-persisted-state";
+import { useStations } from "./hooks/use-stations";
+import { cn, createKey } from "./utils";
 
 export function App() {
   const [state, setState] = React.useState<"VIEW" | "SEARCH" | "ADD">("VIEW");
