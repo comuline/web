@@ -57,23 +57,51 @@ const ScheduleLine = ({
         ) : null}
       </div>
       {(groupedSchedule[lineKey]?.[destKey] ?? []).slice(1, 5).length > 0 ? (
-        <div className="flex flex-col gap-2.5">
-          <p className="text-xs opacity-50">Jam berikutnya</p>
-          <div className="grid grid-cols-2 gap-1.5 md:grid-cols-4 md:gap-1">
-            {(groupedSchedule[lineKey]?.[destKey] ?? [])
-              .slice(1, 5)
-              .map((train) => (
-                <div key={train.id} className="flex flex-col gap-0.5">
-                  <p className="font-mono text-sm font-semibold">
-                    {formatDateToTime(train.departs_at)}
-                  </p>
-                  <p className="text-xs opacity-30">
-                    {formatRelativeToNow(train.departs_at)}
-                  </p>
+        <Accordion.Root
+          type="multiple"
+          className="w-full pr-1 pt-2"
+          defaultValue={[]}
+        >
+          <Accordion.Item value={`${lineKey}-${destKey}`}>
+            <Accordion.Trigger>
+              <div className="flex w-full flex-col gap-2.5 text-left">
+                <p className="text-xs opacity-50">Jam berikutnya</p>
+
+                <div className="grid grid-cols-2 gap-1.5 md:grid-cols-4 md:gap-1">
+                  {(groupedSchedule[lineKey]?.[destKey] ?? [])
+                    .slice(1, 5)
+                    .map((train) => (
+                      <div key={train.id} className="flex flex-col gap-0.5">
+                        <p className="font-mono text-sm font-semibold">
+                          {formatDateToTime(train.departs_at)}
+                        </p>
+                        <p className="text-xs opacity-30">
+                          {formatRelativeToNow(train.departs_at)}
+                        </p>
+                      </div>
+                    ))}
                 </div>
-              ))}
-          </div>
-        </div>
+              </div>
+            </Accordion.Trigger>
+            <Accordion.Content className="flex w-full text-left">
+              <div className="grid w-full grid-cols-2 gap-1.5 md:grid-cols-4 md:gap-1">
+                {(groupedSchedule[lineKey]?.[destKey] ?? [])
+                  .slice(5)
+                  .map((train) => (
+                    <div key={train.id} className="flex flex-col gap-0.5">
+                      <p className="font-mono text-sm font-semibold">
+                        {formatDateToTime(train.departs_at)}
+                      </p>
+                      <p className="text-xs opacity-30">
+                        {formatRelativeToNow(train.departs_at)}
+                      </p>
+                    </div>
+                  ))}
+              </div>
+              <span className="size-4 h-0" />
+            </Accordion.Content>
+          </Accordion.Item>
+        </Accordion.Root>
       ) : null}
     </div>
   );
@@ -123,12 +151,12 @@ export const StationItem = ({ stationId }: { stationId: string }) => {
           <div className="flex w-full flex-col gap-1 text-left">
             <p className="text-xs opacity-50">Stasiun</p>
             <div className="flex items-center gap-3">
-              {station?.data.name ? (
+              {station ? (
                 <h1 className="text-2xl font-semibold capitalize">
                   {station?.data.name.toLocaleLowerCase()}
                 </h1>
               ) : (
-                <div className="h-6.5 w-20 rounded-md bg-zinc-500/10" />
+                <div className="h-6 w-20 rounded-md bg-zinc-500/10" />
               )}
               {isLoading || isValidating ? (
                 <Loading01 className="size-4 animate-spin opacity-50" />
