@@ -22,5 +22,10 @@ jobs:
       - name: Install package deps
         run: bun i
 
+      - name: Generate API SDK
+        run: bun run api:gen
+        env:
+          VITE_COMULINE_API_URL: "https://comuline-api.zulio.workers.dev"
+
       - name: Build package
         run: bun run build

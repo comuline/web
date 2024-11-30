@@ -18,7 +18,7 @@ jobs:
         run: bun i
 
       - name: Generate API SDK
-        run: bun run api:sdk
+        run: bun run api:gen
         env:
           VITE_COMULINE_API_URL: "https://comuline-api.zulio.workers.dev"
 
