@@ -147,7 +147,6 @@ export const StationItem = ({ stationId }: { stationId: string }) => {
     const data = schedules?.data;
     return data
       ?.filter((x) => {
-        return true;
         const date = new Date(x.departs_at);
         const now = new Date();
         return (

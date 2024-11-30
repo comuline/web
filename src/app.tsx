@@ -254,18 +254,31 @@ export function App() {
               }}
               className="mx-auto flex h-fit w-full max-w-[500px] flex-col px-4 pb-4"
             >
-              {(stations?.data || [])
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .filter((station) => {
-                  if (search === "") return true;
-                  return station.name
-                    .toLocaleLowerCase()
-                    .includes(search.toLocaleLowerCase());
-                })
-                .map((station) => {
+              {(() => {
+                const filtered = (stations?.data || [])
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .filter((station) => {
+                    if (search === "") return true;
+                    return station.name
+                      .toLowerCase()
+                      .includes(search.toLowerCase());
+                  });
+
+                if (filtered.length === 0) {
+                  return (
+                    <div className="flex flex-col items-center justify-center gap-1 py-10 text-center">
+                      <span className="text-md opacity-50">
+                        Stasiun {search} tidak dapat ditemukan
+                      </span>
+                    </div>
+                  );
+                }
+
+                return filtered.map((station) => {
                   const isSaved = savedStations.some(
                     ({ id }) => id === station.id,
                   );
+
                   return (
                     <motion.button
                       key={station.id}
@@ -277,9 +290,11 @@ export function App() {
                           const isSaved = prev.some(
                             ({ id }) => id === station.id,
                           );
+
                           if (isSaved) {
                             return prev.filter(({ id }) => id !== station.id);
                           }
+
                           return [
                             ...prev,
                             {
@@ -291,7 +306,7 @@ export function App() {
                         });
                       }}
                     >
-                      <span>{station.name.toLocaleLowerCase()}</span>
+                      <span>{station.name.toLowerCase()}</span>
                       {savedStations.length === 1 && isSaved ? null : (
                         <Plus
                           className={cn(
@@ -305,7 +320,8 @@ export function App() {
                       )}
                     </motion.button>
                   );
-                })}
+                });
+              })()}
             </motion.section>
           ) : (
             <motion.section
@@ -334,17 +350,33 @@ export function App() {
               }}
               className="mx-auto flex h-fit w-full max-w-[500px] flex-col px-5 pb-4"
             >
-              {savedStations
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .filter((station) => {
-                  if (search === "") return true;
-                  return station.name
-                    .toLocaleLowerCase()
-                    .includes(search.toLocaleLowerCase());
-                })
-                .map(({ id: stationId }) => (
+              {(() => {
+                const filtered = savedStations
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .filter((station) => {
+                    if (search === "") return true;
+                    return station.name
+                      .toLowerCase()
+                      .includes(search.toLowerCase());
+                  });
+
+                if (filtered.length === 0) {
+                  return (
+                    <div className="flex flex-col items-center justify-center gap-1 py-10 text-center">
+                      <h1 className="text-md opacity-80">
+                        Stasiun belum ditambahkan
+                      </h1>
+                      <span className="text-sm opacity-50">
+                        Tambahkan stasiun dengan menekan tombol +
+                      </span>
+                    </div>
+                  );
+                }
+
+                return filtered.map(({ id: stationId }) => (
                   <StationItem key={stationId} stationId={stationId} />
-                ))}
+                ));
+              })()}
             </motion.section>
           )}
         </AnimatePresence>
