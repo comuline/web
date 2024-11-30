@@ -1,0 +1,26 @@
+name: Build Web on Pull Request
+
+on:
+  pull_request:
+    branches: ["main"]
+    types: [opened, reopened, synchronize]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Installing Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install package deps
+        run: bun i
+
+      - name: Build package
+        run: bun run build

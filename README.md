@@ -1,5 +1,5 @@
 <a href="https://www.comuline.com">
-  <img alt="Comuline — Simple & beautiful KRL commuter line schedule app" src="https://www.comuline.com/og.png">
+  <img alt="Comuline — Simple & beautiful KRL commuter line schedule app" src="public/og.png">
   <h1 align="center">Comuline</h1>
 </a>
 
@@ -53,7 +53,7 @@ To get a local copy up and running, please follow these simple steps.
 3. Install packages
 
    ```sh
-   npm i
+   bun i
    ```
 
 4. Copy the `.env.example` to `.env`
@@ -62,10 +62,16 @@ To get a local copy up and running, please follow these simple steps.
    cp .env.example .env
    ```
 
-5. Run the app locally
+5. Generate typescript SDK from the API using [OpenAPI TS](https://openapi-ts.dev/)
 
    ```sh
-   npm run dev
+   bun run api:gen
+   ```
+
+6. Run the app locally
+
+   ```sh
+   bun run dev
    ```
 
 ## Contributing
