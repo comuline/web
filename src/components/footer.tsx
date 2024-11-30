@@ -29,6 +29,7 @@ const Footer = () => (
       </a>
       <a
         target="_blank"
+        rel="noopener noreferrer"
         href="https://discord.gg/SnPcwrpZWe"
         className="transition-hover opacity-50 hover:opacity-100"
       >
@@ -48,6 +49,7 @@ const Footer = () => (
       </a>
       <a
         target="_blank"
+        rel="noopener noreferrer"
         href="https://www.linkedin.com/company/comuline/"
         className="transition-hover opacity-50 hover:opacity-100"
       >
@@ -67,6 +69,7 @@ const Footer = () => (
       </a>
       <a
         target="_blank"
+        rel="noopener noreferrer"
         href="mailto:support@comuline.com"
         className="transition-hover opacity-50 hover:opacity-100"
       >
@@ -77,6 +80,7 @@ const Footer = () => (
     <div className="mx-auto flex items-center gap-[10px]">
       <a
         target="_blank"
+        rel="noopener noreferrer"
         href="https://comuline.featurebase.app/"
         className="underline opacity-50 transition hover:opacity-100"
       >
@@ -85,6 +89,7 @@ const Footer = () => (
       <p className="opacity-30">⋅</p>
       <a
         target="_blank"
+        rel="noopener noreferrer"
         href="https://status.comuline.com/"
         className="underline opacity-50 transition hover:opacity-100"
       >
@@ -93,6 +98,7 @@ const Footer = () => (
       <p className="opacity-30">⋅</p>
       <a
         target="_blank"
+        rel="noopener noreferrer"
         href="https://www.api.comuline.com/docs"
         className="underline opacity-50 transition hover:opacity-100"
       >
@@ -101,6 +107,7 @@ const Footer = () => (
       <p className="opacity-30">⋅</p>
       <a
         target="_blank"
+        rel="noopener noreferrer"
         href="https://analytics.zulio.me/share/t1FN42zTmHDAdUiP/www.comuline.com"
         className="underline opacity-50 transition hover:opacity-100"
       >
