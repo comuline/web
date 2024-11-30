@@ -6,6 +6,7 @@ import { useMeasure } from "./hooks/use-measure";
 import { usePersistedState } from "./hooks/use-persisted-state";
 import { useStations } from "./hooks/use-stations";
 import { cn, createKey } from "./utils";
+import Footer from "./components/footer";
 
 export function App() {
   const [state, setState] = React.useState<"VIEW" | "SEARCH" | "ADD">("VIEW");
@@ -252,7 +253,7 @@ export function App() {
               style={{
                 marginTop: "110px",
               }}
-              className="mx-auto flex h-fit w-full max-w-[500px] flex-col px-4 pb-4"
+              className="mx-auto flex h-fit w-full max-w-[500px] flex-col px-4"
             >
               {(() => {
                 const filtered = (stations?.data || [])
@@ -348,7 +349,7 @@ export function App() {
               style={{
                 marginTop: "60px",
               }}
-              className="mx-auto flex h-fit w-full max-w-[500px] flex-col px-5 pb-4"
+              className="mx-auto flex h-fit w-full max-w-[500px] flex-col px-5"
             >
               {(() => {
                 const filtered = savedStations
@@ -380,6 +381,8 @@ export function App() {
             </motion.section>
           )}
         </AnimatePresence>
+
+        <Footer />
       </section>
     </div>
   );
