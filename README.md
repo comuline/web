@@ -27,7 +27,7 @@
 
 ## Introduction
 
-[Comuline](https://www.comuline.com) is a dead-ass simple & beautiful Indonesian public train commuter line app, featuring search and save station locally and get real-time schedule from our [own public API replication](https://github.com/comuline/api). [Comuline](https://www.comuline.com) built with Next.js and deployed to Vercel.
+[Comuline](https://www.comuline.com) is a dead-ass simple & beautiful Indonesian public train commuter line app, featuring search and save station locally and get real-time schedule from our [own public API replication](https://github.com/comuline/api). [Comuline](https://www.comuline.com) built with [Vite](https://vite.dev/) and deployed to [Cloudflare Pages](https://pages.cloudflare.com/).
 
 [Comuline](https://www.comuline.com) made as a public act of our belief that public transportation data should be publicly accessible.
 To any stakeholder that responsible with the data that we're consumed, if you read this, [I'm](https://www.linkedin.com/in/abielzulio/) willing to join your team to build the best public transportation data infrastructure ever for our own good sake.
