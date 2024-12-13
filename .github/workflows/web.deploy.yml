@@ -20,12 +20,12 @@ jobs:
       - name: Generate API SDK
         run: bun run api:gen
         env:
-          VITE_COMULINE_API_URL: "https://comuline-api.zulio.workers.dev"
+          VITE_COMULINE_API_URL: "https://api.comuline.com"
 
       - name: Build package
         run: bun run build
         env:
-          VITE_COMULINE_API_URL: "https://comuline-api.zulio.workers.dev"
+          VITE_COMULINE_API_URL: "https://api.comuline.com"
 
       - name: Deploy to Cloudflare Pages
         run: bun run deploy
