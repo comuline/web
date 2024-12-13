@@ -12,6 +12,9 @@ export function App() {
   const [state, setState] = React.useState<"VIEW" | "SEARCH" | "ADD">("VIEW");
   const [ref, height] = useMeasure<HTMLDivElement>();
 
+  const [addSearch, setAddSearch] = React.useState("");
+  const [viewSearch, setViewSearch] = React.useState("");
+
   const [savedStations, setSavedStations] = usePersistedState<
     {
       id: string;
@@ -22,8 +25,6 @@ export function App() {
     { id: "MRI", name: "Manggarai", saved_at: new Date().toISOString() },
     { id: "DP", name: "Depok", saved_at: new Date().toISOString() },
   ]);
-
-  const [search, setSearch] = React.useState("");
 
   const { data: stations } = useStations();
 
@@ -76,7 +77,7 @@ export function App() {
                           <input
                             placeholder="Cari stasiun"
                             autoFocus
-                            onChange={(e) => setSearch(e.target.value)}
+                            onChange={(e) => setViewSearch(e.target.value)}
                             className="text-md w-full bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-transparent"
                           />
                           <motion.button
@@ -88,7 +89,7 @@ export function App() {
                             whileTap={{ scale: 0.75 }}
                             onClick={() => {
                               setState("VIEW");
-                              setSearch("");
+                              setViewSearch("");
                             }}
                             className="p-1.5 opacity-50 transition duration-200 ease-in-out hover:opacity-100"
                           >
@@ -159,9 +160,14 @@ export function App() {
                   </AnimatePresence>
                   <motion.button
                     whileTap={{ scale: 0.75 }}
-                    onClick={() =>
-                      setState((prev) => (prev === "ADD" ? "VIEW" : "ADD"))
-                    }
+                    onClick={() => {
+                      setState((prev) => {
+                        if (prev === "ADD") {
+                          setAddSearch("");
+                        }
+                        return prev === "ADD" ? "VIEW" : "ADD";
+                      });
+                    }}
                     data-state={"open"}
                     className="rounded-md p-2 transition hover:bg-zinc-100"
                   >
@@ -216,8 +222,8 @@ export function App() {
                         <input
                           placeholder="Cari stasiun"
                           autoFocus
-                          onChange={(e) => setSearch(e.target.value)}
-                          value={search}
+                          onChange={(e) => setAddSearch(e.target.value)}
+                          value={addSearch}
                           className="text-md w-full bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-transparent"
                         />
                       </motion.div>
@@ -259,17 +265,17 @@ export function App() {
                 const filtered = (stations?.data || [])
                   .sort((a, b) => a.name.localeCompare(b.name))
                   .filter((station) => {
-                    if (search === "") return true;
+                    if (addSearch === "") return true;
                     return station.name
                       .toLowerCase()
-                      .includes(search.toLowerCase());
+                      .includes(addSearch.toLowerCase());
                   });
 
                 if (filtered.length === 0) {
                   return (
                     <div className="flex flex-col items-center justify-center gap-1 py-10 text-center">
                       <span className="text-md opacity-50">
-                        Stasiun {search} tidak dapat ditemukan
+                        Stasiun {addSearch} tidak dapat ditemukan
                       </span>
                     </div>
                   );
@@ -355,10 +361,9 @@ export function App() {
                 const filtered = savedStations
                   .sort((a, b) => a.name.localeCompare(b.name))
                   .filter((station) => {
-                    if (search === "") return true;
                     return station.name
                       .toLowerCase()
-                      .includes(search.toLowerCase());
+                      .includes(viewSearch.toLowerCase());
                   });
 
                 if (filtered.length === 0) {
