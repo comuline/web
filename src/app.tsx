@@ -290,7 +290,7 @@ export function App() {
                     <motion.button
                       key={station.id}
                       whileTap={{ scale: 0.95 }}
-                      disabled={savedStations.length === 1}
+                      disabled={isSaved && savedStations.length === 1}
                       className="flex items-center justify-between rounded-md p-2 text-left capitalize transition hover:bg-zinc-100"
                       onClick={() => {
                         setSavedStations((prev) => {
