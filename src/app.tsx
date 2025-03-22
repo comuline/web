@@ -1,6 +1,10 @@
+import { useTranslation } from "react-i18next";
+import * as Switch from "@radix-ui/react-switch";
 import { Plus, SearchMd, X } from "@untitled-ui/icons-react";
 import { AnimatePresence, motion, MotionConfig } from "motion/react";
-import React from "react";
+import { useState } from "react";
+import { setDefaultOptions } from "date-fns";
+import { id, enUS } from "date-fns/locale";
 import { StationItem } from "./components/station-item";
 import { useMeasure } from "./hooks/use-measure";
 import { usePersistedState } from "./hooks/use-persisted-state";
@@ -8,12 +12,15 @@ import { useStations } from "./hooks/use-stations";
 import { cn, createKey } from "./utils";
 import Footer from "./components/footer";
 
+import "./libs/i18n/config";
+
 export function App() {
-  const [state, setState] = React.useState<"VIEW" | "SEARCH" | "ADD">("VIEW");
+  const [state, setState] = useState<"VIEW" | "SEARCH" | "ADD">("VIEW");
+  const [isSwitchActive, setIsSwitchActive] = useState(false);
   const [ref, height] = useMeasure<HTMLDivElement>();
 
-  const [addSearch, setAddSearch] = React.useState("");
-  const [viewSearch, setViewSearch] = React.useState("");
+  const [addSearch, setAddSearch] = useState("");
+  const [viewSearch, setViewSearch] = useState("");
 
   const [savedStations, setSavedStations] = usePersistedState<
     {
@@ -27,6 +34,15 @@ export function App() {
   ]);
 
   const { data: stations } = useStations();
+  const { t, i18n } = useTranslation();
+
+  const onSwitchLanguange = (val: boolean) => {
+    setIsSwitchActive(val);
+    i18n.changeLanguage(val ? "en" : "id");
+  };
+
+  // added global locale format for date-fns
+  setDefaultOptions({ locale: isSwitchActive ? enUS : id });
 
   /*   useOnClickOutside(ref, () => {
     if (state !== "ADD") {
@@ -75,7 +91,7 @@ export function App() {
                             <SearchMd className="size-5" />
                           </span>
                           <input
-                            placeholder="Cari stasiun"
+                            placeholder={t("Cari stasiun")}
                             autoFocus
                             onChange={(e) => setViewSearch(e.target.value)}
                             className="text-md w-full bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-transparent"
@@ -181,6 +197,22 @@ export function App() {
                       )}
                     />
                   </motion.button>
+                  <div className="flex items-center">
+                    <label className="text-sm" htmlFor="languange-switcher">
+                      ID
+                    </label>
+                    <Switch.Root
+                      id="languange-switcher"
+                      className="relative mx-1 h-[24px] w-[42px] cursor-pointer rounded-full bg-gray-200 outline-none data-[state=checked]:bg-blue-600"
+                      checked={isSwitchActive}
+                      onCheckedChange={onSwitchLanguange}
+                    >
+                      <Switch.Thumb className="block size-[21px] translate-x-0.5 rounded-full bg-white transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-[19px]" />
+                    </Switch.Root>
+                    <label className="text-sm" htmlFor="languange-switcher">
+                      EN
+                    </label>
+                  </div>
                 </div>
                 {state === "ADD" ? (
                   <motion.div
@@ -220,7 +252,7 @@ export function App() {
                           <SearchMd className="size-5" />
                         </span>
                         <input
-                          placeholder="Cari stasiun"
+                          placeholder={t("Cari stasiun")}
                           autoFocus
                           onChange={(e) => setAddSearch(e.target.value)}
                           value={addSearch}
@@ -275,7 +307,9 @@ export function App() {
                   return (
                     <div className="flex flex-col items-center justify-center gap-1 py-10 text-center">
                       <span className="text-md opacity-50">
-                        Stasiun {addSearch} tidak dapat ditemukan
+                        {t("Stasiun {{addSearch}} tidak dapat ditemukan", {
+                          addSearch,
+                        })}
                       </span>
                     </div>
                   );
@@ -370,10 +404,10 @@ export function App() {
                   return (
                     <div className="flex flex-col items-center justify-center gap-1 py-10 text-center">
                       <h1 className="text-md opacity-80">
-                        Stasiun belum ditambahkan
+                        {t("Stasiun belum ditambahkan")}
                       </h1>
                       <span className="text-sm opacity-50">
-                        Tambahkan stasiun dengan menekan tombol +
+                        {t("Tambahkan stasiun dengan menekan tombol")} +
                       </span>
                     </div>
                   );
