@@ -1,10 +1,12 @@
 import { Loading01 } from "@untitled-ui/icons-react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Accordion } from ".//ui";
 import { useSchedule } from "../hooks/use-schedule";
 import { useStation } from "../hooks/use-station";
 import { components } from "../schema";
 import { cn, formatDateToTime, formatRelativeToNow } from "../utils";
+import { Language } from "../libs/i18n/types";
 
 export type GroupedSchedule = Record<
   string,
@@ -21,17 +23,21 @@ const ScheduleLine = ({
   groupedSchedule: GroupedSchedule;
 }) => {
   const hook = useStation(destKey);
+  const {
+    t,
+    i18n: { language },
+  } = useTranslation();
 
   const station = hook.data?.data;
 
   return (
     <div key={destKey} className="flex flex-col gap-1 pb-1 pt-0.5">
       <p className="font-mono text-xs" style={{ color: lineKey.split("-")[1] }}>
-        {groupedSchedule[lineKey]?.[destKey]?.[0]?.line}
+        {t(groupedSchedule[lineKey]?.[destKey]?.[0]?.line)}
       </p>
       <div className="flex items-center justify-between gap-2 text-xs opacity-50">
-        <p>Arah menuju</p>
-        <p>Berangkat pukul</p>
+        <p>{t("Arah menuju")}</p>
+        <p>{t("Berangkat pukul")}</p>
       </div>
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center">
@@ -53,6 +59,7 @@ const ScheduleLine = ({
             <p className="font-mono text-lg font-medium tracking-tight">
               {formatDateToTime(
                 groupedSchedule[lineKey]?.[destKey]?.[0]?.departs_at,
+                language as Language,
               )}
             </p>
 
@@ -73,13 +80,13 @@ const ScheduleLine = ({
         return moreSchedules.length > 0 ? (
           moreSchedules.length < 4 ? (
             <div className="flex w-full flex-col gap-2.5 text-left">
-              <p className="text-xs opacity-50">Jam berikutnya</p>
+              <p className="text-xs opacity-50">{t("Jam berikutnya")}</p>
 
               <div className="grid grid-cols-2 gap-1.5 md:grid-cols-4 md:gap-1">
                 {moreSchedules.map((train) => (
                   <div key={train.id} className="flex flex-col gap-0.5">
                     <p className="font-mono text-sm font-semibold">
-                      {formatDateToTime(train.departs_at)}
+                      {formatDateToTime(train.departs_at, language as Language)}
                     </p>
                     <p className="text-xs opacity-30">
                       {formatRelativeToNow(train.departs_at)}
@@ -98,13 +105,16 @@ const ScheduleLine = ({
               <Accordion.Item value={`${lineKey}-${destKey}`}>
                 <Accordion.Trigger className="pb-1.5 md:pb-2">
                   <div className="flex w-full flex-col gap-2.5 text-left">
-                    <p className="text-xs opacity-50">Jam berikutnya</p>
+                    <p className="text-xs opacity-50">{t("Jam berikutnya")}</p>
 
                     <div className="grid w-full grid-cols-2 gap-1.5 md:grid-cols-4 md:gap-1">
                       {moreSchedules.map((train) => (
                         <div key={train.id} className="flex flex-col gap-0.5">
                           <p className="font-mono text-sm font-semibold">
-                            {formatDateToTime(train.departs_at)}
+                            {formatDateToTime(
+                              train.departs_at,
+                              language as Language,
+                            )}
                           </p>
                           <p className="text-xs opacity-30">
                             {formatRelativeToNow(train.departs_at)}
@@ -121,7 +131,10 @@ const ScheduleLine = ({
                       .map((train) => (
                         <div key={train.id} className="flex flex-col gap-0.5">
                           <p className="font-mono text-sm font-semibold">
-                            {formatDateToTime(train.departs_at)}
+                            {formatDateToTime(
+                              train.departs_at,
+                              language as Language,
+                            )}
                           </p>
                           <p className="text-xs opacity-30">
                             {formatRelativeToNow(train.departs_at)}
@@ -142,6 +155,7 @@ const ScheduleLine = ({
 
 export const StationItem = ({ stationId }: { stationId: string }) => {
   const { data: schedules, isLoading, isValidating } = useSchedule(stationId);
+  const { t } = useTranslation();
 
   const groupedSchedule = React.useMemo(() => {
     const data = schedules?.data;
@@ -182,7 +196,7 @@ export const StationItem = ({ stationId }: { stationId: string }) => {
       <Accordion.Item value={stationId}>
         <Accordion.Trigger className="items-center hover:no-underline">
           <div className="flex w-full flex-col gap-1 text-left">
-            <p className="text-xs opacity-50">Stasiun</p>
+            <p className="text-xs opacity-50">{t("Stasiun")}</p>
             <div className="flex items-center gap-3">
               {station ? (
                 <h1 className="text-2xl font-semibold capitalize">
@@ -222,7 +236,7 @@ export const StationItem = ({ stationId }: { stationId: string }) => {
             </div>
           ) : isEmpty ? (
             <p className="text-sm opacity-50">
-              Jadwal kereta api tidak tersedia. Cek lagi pada esok hari.
+              {t("Jadwal kereta api tidak tersedia. Cek lagi pada esok hari")}.
             </p>
           ) : groupedSchedule ? (
             Object.keys(groupedSchedule).map((lineKey, id, arr) => (

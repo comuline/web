@@ -1,5 +1,5 @@
-import { formatDistanceToNow } from "date-fns";
-import { id } from "date-fns/locale";
+import { format, formatDistanceToNow } from "date-fns";
+import { Language } from "../libs/i18n/types";
 
 export const formatRelativeToNow = (time: string) => {
   const baseDate = new Date(time);
@@ -9,14 +9,10 @@ export const formatRelativeToNow = (time: string) => {
     baseDate.getMinutes(),
   );
 
-  return formatDistanceToNow(todayDate, {
-    locale: id,
-  });
+  return formatDistanceToNow(todayDate);
 };
 
-export const formatDateToTime = (baseDate: string) => {
+export const formatDateToTime = (baseDate: string, lang: Language = "id") => {
   const date = new Date(baseDate);
-  const hours = date.getHours().toString().padStart(2, "0");
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-  return `${hours}:${minutes}`;
+  return format(date, lang === "id" ? "HH:mm" : "hh:mmaaa");
 };
