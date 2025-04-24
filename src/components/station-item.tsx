@@ -72,10 +72,16 @@ const ScheduleLine = ({
         ) : null}
       </div>
       {(() => {
-        const moreSchedules = (groupedSchedule[lineKey]?.[destKey] ?? []).slice(
-          1,
-          5,
-        );
+        const filteredSchedules = groupedSchedule[lineKey]?.[destKey] ?? [];
+        const sortedSchedules = filteredSchedules.toSorted((a, b) => {
+          // sorting schedules ignoring the date part
+          const dateA = new Date(a.departs_at);
+          const dateB = new Date(b.departs_at);
+          const timeA = dateA.getHours() * 60 + dateA.getMinutes();
+          const timeB = dateB.getHours() * 60 + dateB.getMinutes();
+          return timeA - timeB;
+        });
+        const moreSchedules = sortedSchedules.slice(1, 5);
 
         return moreSchedules.length > 0 ? (
           moreSchedules.length < 4 ? (
@@ -126,7 +132,7 @@ const ScheduleLine = ({
                 </Accordion.Trigger>
                 <Accordion.Content className="flex gap-1 text-left">
                   <div className="grid w-full grid-cols-2 gap-1.5 md:grid-cols-4 md:gap-2">
-                    {(groupedSchedule[lineKey]?.[destKey] ?? [])
+                    {sortedSchedules
                       .slice(5)
                       .map((train) => (
                         <div key={train.id} className="flex flex-col gap-0.5">
